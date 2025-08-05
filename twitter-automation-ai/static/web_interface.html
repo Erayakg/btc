@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Automation - Ayarlar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            background: #fafafa;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .keyword-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .keyword-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .keyword-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .log-container {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        
+        .log-entry.error {
+            color: #dc3545;
+        }
+        
+        .log-entry.success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐦 Twitter Automation</h1>
+            <p>Twitter otomasyon ayarlarınızı yapılandırın</p>
+        </div>
+        
+        <div class="content">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('main')">⚙️ Ana Ayarlar</div>
+                <div class="tab" onclick="showTab('api')">🔑 API Ayarları</div>
+                <div class="tab" onclick="showTab('stats')">📊 İstatistikler</div>
+                <div class="tab" onclick="showTab('logs')">📝 Loglar</div>
+            </div>
+            
+            <div id="status" class="status"></div>
+            
+            <!-- Ana Ayarlar -->
+            <div id="main" class="tab-content active">
+                <div class="section">
+                    <h2>📝 Tweet Ayarları</h2>
+                    
+                    <div class="form-group">
+                        <label for="target_keywords">Anahtar Kelimeler (Tweet atılacak):</label>
+                        <div class="keyword-input-container">
+                            <input type="text" id="keyword_input" placeholder="Anahtar kelime ekle ve Enter'a bas">
+                            <div id="keyword_list" class="keyword-list"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tweets_per_account">Hesap Başına Tweet Sayısı:</label>
+                            <input type="number" id="tweets_per_account" value="3" min="1" max="20">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="response_interval">Yanıt Aralığı (saniye):</label>
+                            <input type="number" id="response_interval" value="300" min="60">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>❤️ Beğenme Ayarları</h2>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="enable_liking_tweets" checked>
+                            <label for="enable_liking_tweets">Tweet Beğenmeyi Etkinleştir</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="max_likes_per_run">Çalışma Başına Max Beğeni:</label>
+                        <input type="number" id="max_likes_per_run" value="5" min="1" max="20">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="like_keywords">Beğenilecek Keyword'ler:</label>
+                        <div class="keyword-input-container">
+                            <input type="text" id="like_keyword_input" placeholder="Beğenme keyword'ü ekle ve Enter'a bas">
+                            <div id="like_keyword_list" class="keyword-list"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>🔄 Repost Ayarları</h2>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="enable_keyword_reposts" checked>
+                            <label for="enable_keyword_reposts">Anahtar Kelimeye Repost Etmeyi Etkinleştir</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="max_reposts_per_keyword">Keyword Başına Max Repost:</label>
+                        <input type="number" id="max_reposts_per_keyword" value="2" min="1" max="10">
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>🤖 AI Ayarları</h2>
+                    
+                    <div class="form-group">
+                        <label for="llm_model">Gemini Model:</label>
+                        <input type="text" id="llm_model" value="gemini-1.5-flash" readonly>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="llm_max_tokens">Max Token:</label>
+                            <input type="number" id="llm_max_tokens" value="50" min="10" max="4000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="llm_temperature">Temperature:</label>
+                            <input type="number" id="llm_temperature" value="0.7" min="0" max="2" step="0.1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Ayarları -->
+            <div id="api" class="tab-content">
+                <div class="section">
+                    <h2>🔑 API Anahtarları</h2>
+                    
+                    <div class="form-group">
+                        <label for="gemini_api_key">Gemini API Key:</label>
+                        <input type="password" id="gemini_api_key" placeholder="AIza...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- İstatistikler -->
+            <div id="stats" class="tab-content">
+                <div class="section">
+                    <h2>📊 Otomasyon İstatistikleri</h2>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total_tweets">0</div>
+                            <div class="stat-label">Toplam Tweet</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-number" id="total_likes">0</div>
+                            <div class="stat-label">Toplam Beğeni</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-number" id="total_reposts">0</div>
+                            <div class="stat-label">Toplam Repost</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-number" id="active_accounts">0</div>
+                            <div class="stat-label">Aktif Hesap</div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="refreshStats()">🔄 İstatistikleri Yenile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loglar -->
+            <div id="logs" class="tab-content">
+                <div class="section">
+                    <h2>📝 Sistem Logları</h2>
+                    
+                    <div class="log-container" id="log_container">
+                        <div class="log-entry">Sistem başlatıldı...</div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="clearLogs()">🗑️ Logları Temizle</button>
+                        <button class="btn btn-secondary" onclick="refreshLogs()">🔄 Logları Yenile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="loadSettings()">📥 Ayarları Yükle</button>
+                <button class="btn" onclick="saveSettings()">💾 Ayarları Kaydet</button>
+                <button class="btn btn-success" onclick="startAutomation()">🚀 Otomasyonu Başlat</button>
+                <button class="btn btn-danger" onclick="stopAutomation()">⏹️ Otomasyonu Durdur</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let keywords = ['DersMaster', 'Eğitimde Yapay Zeka', 'özel ders'];
+        let likeKeywords = ['eğitim', 'öğrenme', 'yapay zeka'];
+        
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+        
+        function addKeyword() {
+            const input = document.getElementById('keyword_input');
+            const keyword = input.value.trim();
+            
+            if (keyword && !keywords.includes(keyword)) {
+                keywords.push(keyword);
+                updateKeywordList();
+                input.value = '';
+            }
+        }
+        
+        function removeKeyword(keyword) {
+            keywords = keywords.filter(k => k !== keyword);
+            updateKeywordList();
+        }
+        
+        function updateKeywordList() {
+            const container = document.getElementById('keyword_list');
+            container.innerHTML = '';
+            
+            keywords.forEach(keyword => {
+                const tag = document.createElement('div');
+                tag.className = 'keyword-tag';
+                tag.innerHTML = `
+                    ${keyword}
+                    <span class="remove" onclick="removeKeyword('${keyword}')">&times;</span>
+                `;
+                container.appendChild(tag);
+            });
+        }
+        
+        function addLikeKeyword() {
+            const input = document.getElementById('like_keyword_input');
+            const keyword = input.value.trim();
+            
+            if (keyword && !likeKeywords.includes(keyword)) {
+                likeKeywords.push(keyword);
+                updateLikeKeywordList();
+                input.value = '';
+            }
+        }
+        
+        function removeLikeKeyword(keyword) {
+            likeKeywords = likeKeywords.filter(k => k !== keyword);
+            updateLikeKeywordList();
+        }
+        
+        function updateLikeKeywordList() {
+            const container = document.getElementById('like_keyword_list');
+            container.innerHTML = '';
+            
+            likeKeywords.forEach(keyword => {
+                const tag = document.createElement('div');
+                tag.className = 'keyword-tag';
+                tag.innerHTML = `
+                    ${keyword}
+                    <span class="remove" onclick="removeLikeKeyword('${keyword}')">&times;</span>
+                `;
+                container.appendChild(tag);
+            });
+        }
+        
+        function saveSettings() {
+            const settings = {
+                api_keys: {
+                    gemini_api_key: document.getElementById('gemini_api_key').value
+                },
+                twitter_automation: {
+                    response_interval_seconds: parseInt(document.getElementById('response_interval').value),
+                    tweets_per_account: parseInt(document.getElementById('tweets_per_account').value),
+                    action_config: {
+                        enable_liking_tweets: document.getElementById('enable_liking_tweets').checked,
+                        max_likes_per_run: parseInt(document.getElementById('max_likes_per_run').value),
+                        like_tweets_from_keywords: likeKeywords,
+                        enable_keyword_reposts: document.getElementById('enable_keyword_reposts').checked,
+                        max_reposts_per_keyword: parseInt(document.getElementById('max_reposts_per_keyword').value),
+                        target_keywords: keywords,
+                        llm_settings_for_post: {
+                            service_preference: 'gemini',
+                            model_name_override: document.getElementById('llm_model').value,
+                            max_tokens: parseInt(document.getElementById('llm_max_tokens').value),
+                            temperature: parseFloat(document.getElementById('llm_temperature').value)
+                        }
+                    }
+                }
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('twitter_automation_settings', JSON.stringify(settings));
+            
+            // Send to backend
+            fetch('/api/save-settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('Ayarlar başarıyla kaydedildi!', 'success');
+                } else {
+                    showStatus('Ayarlar kaydedilirken hata oluştu: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showStatus('Bağlantı hatası: ' + error.message, 'error');
+            });
+        }
+        
+        function loadSettings() {
+            const saved = localStorage.getItem('twitter_automation_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                
+                // Load API keys
+                document.getElementById('gemini_api_key').value = settings.api_keys?.gemini_api_key || '';
+                
+                // Load main settings
+                document.getElementById('response_interval').value = settings.twitter_automation?.response_interval_seconds || 300;
+                document.getElementById('tweets_per_account').value = settings.twitter_automation?.tweets_per_account || 3;
+                
+                // Load action config
+                const actionConfig = settings.twitter_automation?.action_config || {};
+                document.getElementById('enable_liking_tweets').checked = actionConfig.enable_liking_tweets || false;
+                document.getElementById('max_likes_per_run').value = actionConfig.max_likes_per_run || 5;
+                document.getElementById('enable_keyword_reposts').checked = actionConfig.enable_keyword_reposts || false;
+                document.getElementById('max_reposts_per_keyword').value = actionConfig.max_reposts_per_keyword || 2;
+                
+                // Load keywords
+                keywords = actionConfig.target_keywords || [];
+                likeKeywords = actionConfig.like_tweets_from_keywords || [];
+                updateKeywordList();
+                updateLikeKeywordList();
+                
+                // Load LLM settings
+                const llmSettings = actionConfig.llm_settings_for_post || {};
+                document.getElementById('llm_model').value = llmSettings.model_name_override || 'gemini-1.5-flash';
+                document.getElementById('llm_max_tokens').value = llmSettings.max_tokens || 50;
+                document.getElementById('llm_temperature').value = llmSettings.temperature || 0.7;
+                
+                showStatus('Ayarlar başarıyla yüklendi!', 'success');
+            } else {
+                showStatus('Kaydedilmiş ayar bulunamadı!', 'error');
+            }
+        }
+        
+        function startAutomation() {
+            saveSettings();
+            
+            // Send settings to backend
+            fetch('/api/start-automation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    settings: JSON.parse(localStorage.getItem('twitter_automation_settings'))
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('Otomasyon başarıyla başlatıldı!', 'success');
+                } else {
+                    showStatus('Otomasyon başlatılırken hata oluştu: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                showStatus('Bağlantı hatası: ' + error.message, 'error');
+            });
+        }
+        
+        function stopAutomation() {
+            fetch('/api/stop-automation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('Otomasyon durduruldu!', 'success');
+                } else {
+                    showStatus('Otomasyon durdurulurken hata oluştu: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                showStatus('Bağlantı hatası: ' + error.message, 'error');
+            });
+        }
+        
+        function refreshStats() {
+            fetch('/api/get-stats')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total_tweets').textContent = data.total_tweets || 0;
+                document.getElementById('total_likes').textContent = data.total_likes || 0;
+                document.getElementById('total_reposts').textContent = data.total_reposts || 0;
+                document.getElementById('active_accounts').textContent = data.active_accounts || 0;
+                showStatus('İstatistikler güncellendi!', 'success');
+            })
+            .catch(error => {
+                showStatus('İstatistikler alınırken hata oluştu: ' + error.message, 'error');
+            });
+        }
+        
+        function refreshLogs() {
+            fetch('/api/get-logs')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('log_container');
+                container.innerHTML = '';
+                
+                data.logs.forEach(log => {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    if (log.includes('ERROR') || log.includes('Hata')) {
+                        entry.classList.add('error');
+                    } else if (log.includes('SUCCESS') || log.includes('Başarı')) {
+                        entry.classList.add('success');
+                    }
+                    entry.textContent = log;
+                    container.appendChild(entry);
+                });
+                
+                container.scrollTop = container.scrollHeight;
+            })
+            .catch(error => {
+                showStatus('Loglar alınırken hata oluştu: ' + error.message, 'error');
+            });
+        }
+        
+        function clearLogs() {
+            document.getElementById('log_container').innerHTML = '<div class="log-entry">Loglar temizlendi...</div>';
+        }
+        
+        // Event listeners
+        document.getElementById('keyword_input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addKeyword();
+            }
+        });
+        
+        document.getElementById('like_keyword_input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addLikeKeyword();
+            }
+        });
+        
+        // Initialize
+        updateKeywordList();
+        updateLikeKeywordList();
+        
+        // Auto refresh stats and logs every 30 seconds
+        setInterval(refreshStats, 30000);
+        setInterval(refreshLogs, 30000);
+    </script>
+</body>
+</html> 

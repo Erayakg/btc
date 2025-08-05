@@ -1,0 +1,73 @@
+{
+  "api_keys": {
+    "gemini_api_key": "AIzaSyA4id4ds6GvxgnpCXerY82Kz-Incsp2Lek"
+  },
+  "twitter_automation": {
+    "response_interval_seconds": 300,
+    "tweets_per_account": 3,
+    "media_directory": "media_files",
+    "processed_tweets_file": "processed_tweets_log.csv",
+    "cookie_file_per_account_in_accounts_json": true,
+    "batch_processing": {
+      "batch_size": 25,
+      "delay_between_batches_seconds": 120
+    },
+    "action_config": {
+      "enable_liking_tweets": false,
+      "max_likes_per_run": 5,
+      "like_tweets_from_keywords": [
+        "eğitim",
+        "öğrenme",
+        "yapay zeka"
+      ],
+      "enable_keyword_reposts": false,
+      "max_reposts_per_keyword": 2,
+      "target_keywords": [
+        "#yeteneksizsizsiniz"
+      ],
+      "llm_settings_for_post": {
+        "service_preference": "gemini",
+        "model_name_override": "gemini-1.5-flash",
+        "max_tokens": 50,
+        "temperature": 0.7
+      }
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(levelname)s - %(module)s - %(message)s",
+    "console_handler": {
+      "enabled": true,
+      "level": "INFO",
+      "format": "[%(levelname)-8s] %(name)s: %(message)s"
+    },
+    "file_handler": {
+      "enabled": true,
+      "path": "logs/app.log",
+      "level": "DEBUG",
+      "format": "%(asctime)s [%(levelname)-8s] %(name)s (%(module)s.%(funcName)s:%(lineno)d): %(message)s",
+      "rotation_type": "size",
+      "max_bytes": 1024000,
+      "backup_count": 5
+    }
+  },
+  "browser_settings": {
+    "type": "firefox",
+    "headless": false,
+    "user_agent_generation": "random",
+    "custom_user_agent": null,
+    "proxy": null,
+    "window_size": "1920,1080",
+    "driver_options": [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--ignore-certificate-errors",
+      "--disable-gpu",
+      "--log-level=3",
+      "--disable-notifications",
+      "--disable-popup-blocking"
+    ],
+    "page_load_timeout_seconds": 60,
+    "script_timeout_seconds": 60
+  }
+}
