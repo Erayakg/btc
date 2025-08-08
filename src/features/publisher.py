@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import random
 import requests
 import mimetypes
 from typing import List, Optional, Dict, Any
@@ -138,6 +139,30 @@ class TweetPublisher:
                 time.sleep(5)
             else:
                 time.sleep(3) # Shorter wait for compose URL
+            
+            # Human-like behavior: Add random delays and scrolling before opening composer
+            import random
+            logger.info("Adding human-like delays and scrolling behavior...")
+            
+            # Random delay before opening composer (2-5 seconds)
+            human_delay = random.uniform(2, 5)
+            logger.info(f"Waiting {human_delay:.1f} seconds before opening composer...")
+            time.sleep(human_delay)
+            
+            # Random scrolling behavior to simulate human browsing
+            try:
+                # Scroll up and down randomly to simulate human behavior
+                scroll_actions = random.randint(1, 3)
+                for i in range(scroll_actions):
+                    scroll_amount = random.randint(-300, 300)
+                    self.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                    logger.info(f"Scrolling {scroll_amount} pixels (action {i+1}/{scroll_actions})")
+                    time.sleep(random.uniform(0.5, 1.5))
+            except Exception as e:
+                logger.warning(f"Scrolling behavior failed: {e}")
+            
+            # Additional random delay after scrolling
+            time.sleep(random.uniform(1, 3))
             # Eğer home page'deyse tweet butonuna tıkla
             if "home" in self.driver.current_url.lower():
                 try:
@@ -169,9 +194,22 @@ class TweetPublisher:
                             continue
                     
                     if main_tweet_button:
+                        # Human-like behavior: Hover before clicking
+                        try:
+                            from selenium.webdriver.common.action_chains import ActionChains
+                            actions = ActionChains(self.driver)
+                            actions.move_to_element(main_tweet_button).pause(random.uniform(0.5, 1.5)).perform()
+                            logger.info("Hovered over tweet button before clicking...")
+                        except Exception as e:
+                            logger.warning(f"Hover behavior failed: {e}")
+                        
                         main_tweet_button.click()
                         logger.info("Clicked main tweet button to open composer.")
-                        time.sleep(5) # Increased wait time for composer to open
+                        
+                        # Human-like delay after clicking (3-7 seconds)
+                        composer_delay = random.uniform(3, 7)
+                        logger.info(f"Waiting {composer_delay:.1f} seconds for composer to fully load...")
+                        time.sleep(composer_delay)
                     else:
                         raise TimeoutException("No main tweet button found")
                         
@@ -215,11 +253,37 @@ class TweetPublisher:
             
             # Clear and type text - multiple approaches to ensure button activates
             try:
-                # Method 1: Clear first, then set innerHTML
+                # Human-like typing behavior
+                logger.info("Starting human-like typing behavior...")
+                
+                # Clear the text area first
                 text_area.clear()
-                time.sleep(0.5)
-                self.driver.execute_script("arguments[0].innerHTML = arguments[1];", text_area, tweet_text)
-                logger.info("Typed tweet text into textarea using innerHTML method.")
+                time.sleep(random.uniform(0.5, 1.0))
+                
+                # Method 1: Simulate human typing with random delays
+                logger.info("Simulating human typing with random delays...")
+                
+                # Türkçe karakterleri İngilizce karakterlere çevir
+                tweet_text_ascii = tweet_text.encode('ascii', 'ignore').decode('ascii')
+                logger.info(f"Original text: {tweet_text[:50]}...")
+                logger.info(f"ASCII text: {tweet_text_ascii[:50]}...")
+                
+                for char in tweet_text_ascii:
+                    text_area.send_keys(char)
+                    # Random delay between characters (0.05-0.15 seconds)
+                    time.sleep(random.uniform(0.05, 0.15))
+                    
+                    # Occasionally pause longer (like humans do when thinking)
+                    if random.random() < 0.1:  # 10% chance
+                        pause_duration = random.uniform(0.5, 2.0)
+                        logger.info(f"Pausing for {pause_duration:.1f} seconds (thinking pause)...")
+                        time.sleep(pause_duration)
+                
+                logger.info("Finished human-like typing simulation.")
+                
+                # Method 2: Also set innerHTML as backup
+                self.driver.execute_script("arguments[0].innerHTML = arguments[1];", text_area, tweet_text_ascii)
+                logger.info("Set innerHTML as backup method.")
                 
                 # Method 2: Trigger input events to activate button
                 self.driver.execute_script("""
@@ -243,7 +307,7 @@ class TweetPublisher:
                         textarea.dispatchEvent(new KeyboardEvent('keydown', { key: text[i] }));
                         textarea.dispatchEvent(new KeyboardEvent('keyup', { key: text[i] }));
                     }
-                """, text_area, tweet_text)
+                """, text_area, tweet_text_ascii)
                 logger.info("Triggered input events to activate button.")
                 
                 # Method 3: Add a character and then remove it to force button activation
@@ -285,7 +349,7 @@ class TweetPublisher:
                         time.sleep(0.5)
                         
                         # Type the text character by character
-                        for char in tweet_text:
+                        for char in tweet_text_ascii:
                             text_area.send_keys(char)
                             time.sleep(0.05)  # Small delay between characters
                         
@@ -523,6 +587,11 @@ class TweetPublisher:
                 logger.error("All click methods failed!")
                 return False
 
+            # Human-like delay before posting (2-4 seconds)
+            pre_post_delay = random.uniform(2, 4)
+            logger.info(f"Waiting {pre_post_delay:.1f} seconds before posting (human-like behavior)...")
+            time.sleep(pre_post_delay)
+
             # Wait for confirmation and verify tweet was actually posted
             time.sleep(3) # Wait for tweet to be processed
             
@@ -573,6 +642,22 @@ class TweetPublisher:
                 
                 if tweet_posted:
                     logger.info(f"Tweet posted successfully: '{tweet_text[:50]}...'")
+                    
+                    # Human-like behavior: Scroll around after posting
+                    try:
+                        logger.info("Adding post-tweet human-like behavior...")
+                        # Scroll down a bit to see the posted tweet
+                        self.driver.execute_script("window.scrollBy(0, 200);")
+                        time.sleep(random.uniform(1, 3))
+                        
+                        # Scroll back up slightly
+                        self.driver.execute_script("window.scrollBy(0, -100);")
+                        time.sleep(random.uniform(0.5, 1.5))
+                        
+                        logger.info("Completed post-tweet scrolling behavior.")
+                    except Exception as e:
+                        logger.warning(f"Post-tweet scrolling failed: {e}")
+                    
                     return True
                 else:
                     logger.warning("Could not verify tweet was posted, but continuing...")
@@ -608,7 +693,22 @@ class TweetPublisher:
 
         try:
             self.browser_manager.navigate_to(str(original_tweet.tweet_url))
-            time.sleep(3) # Wait for tweet page to load
+            
+            # Human-like behavior: Add random delay and scrolling
+            logger.info("Adding human-like behavior before replying...")
+            time.sleep(random.uniform(2, 4))  # Random delay before interacting
+            
+            # Scroll around to simulate human reading
+            try:
+                scroll_amount = random.randint(-200, 200)
+                self.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                logger.info(f"Scrolling {scroll_amount} pixels before replying...")
+                time.sleep(random.uniform(1, 2))
+            except Exception as e:
+                logger.warning(f"Pre-reply scrolling failed: {e}")
+            
+            # Wait for tweet page to load
+            time.sleep(3)
 
             # Click the reply button on the main tweet to open the reply composer
             # This selector targets the reply icon/button for the specific tweet.
@@ -754,7 +854,22 @@ class TweetPublisher:
 
         try:
             self.browser_manager.navigate_to(str(original_tweet.tweet_url))
-            time.sleep(3) # Wait for tweet page to load
+            
+            # Human-like behavior: Add random delay and scrolling
+            logger.info("Adding human-like behavior before retweeting...")
+            time.sleep(random.uniform(2, 4))  # Random delay before interacting
+            
+            # Scroll around to simulate human reading
+            try:
+                scroll_amount = random.randint(-200, 200)
+                self.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                logger.info(f"Scrolling {scroll_amount} pixels before retweeting...")
+                time.sleep(random.uniform(1, 2))
+            except Exception as e:
+                logger.warning(f"Pre-retweet scrolling failed: {e}")
+            
+            # Wait for tweet page to load
+            time.sleep(3)
 
             main_tweet_article_xpath = f"//article[.//a[contains(@href, '/status/{original_tweet.tweet_id}')]]"
             main_tweet_element = WebDriverWait(self.driver, 15).until(
@@ -770,10 +885,23 @@ class TweetPublisher:
             # Or the icon color might change. This is complex to check reliably via DOM alone for retweets.
             # For now, we'll proceed. Twitter usually handles duplicate retweets gracefully (e.g., by un-retweeting).
             
+            # Human-like behavior: Hover before clicking retweet button
+            try:
+                from selenium.webdriver.common.action_chains import ActionChains
+                actions = ActionChains(self.driver)
+                actions.move_to_element(retweet_icon_button).pause(random.uniform(0.5, 1.5)).perform()
+                logger.info("Hovered over retweet button before clicking...")
+            except Exception as e:
+                logger.warning(f"Retweet hover behavior failed: {e}")
+            
             # Use the same enhanced click method for retweet
             if not safe_click(retweet_icon_button, f"retweet icon for tweet {original_tweet.tweet_id}"):
                 return False
-            time.sleep(1) # Wait for retweet menu to appear
+            
+            # Human-like delay after clicking retweet button
+            retweet_delay = random.uniform(1, 3)
+            logger.info(f"Waiting {retweet_delay:.1f} seconds for retweet menu to appear...")
+            time.sleep(retweet_delay)
 
             if is_quote_tweet:
                 # Click "Quote" option in the menu
@@ -800,8 +928,24 @@ class TweetPublisher:
                 quote_text_area = WebDriverWait(self.driver, 15).until(
                     EC.presence_of_element_located((By.XPATH, quote_text_area_xpath))
                 )
+                
+                # Human-like typing behavior for quote tweet
+                logger.info("Starting human-like typing for quote tweet...")
                 quote_text_area.clear()
-                quote_text_area.send_keys(final_quote_text)
+                time.sleep(random.uniform(0.5, 1.0))
+                
+                # Type character by character with random delays
+                for char in final_quote_text:
+                    quote_text_area.send_keys(char)
+                    time.sleep(random.uniform(0.05, 0.15))
+                    
+                    # Occasionally pause longer (like humans do when thinking)
+                    if random.random() < 0.1:  # 10% chance
+                        pause_duration = random.uniform(0.5, 2.0)
+                        logger.info(f"Pausing for {pause_duration:.1f} seconds during quote typing...")
+                        time.sleep(pause_duration)
+                
+                logger.info("Finished human-like typing for quote tweet.")
                 logger.info("Typed quote text.")
 
                 # Click "Post" button for the quote tweet

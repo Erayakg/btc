@@ -51,18 +51,22 @@ class TwitterOrchestrator:
         self.global_tweets = []  # Global olarak üretilen tweetler
         self.global_repost_tweets = []  # Global olarak üretilen repost tweetler
 
-    async def _generate_global_tweets(self, target_keywords: list, llm_settings: LLMSettings) -> list:
-        """Tüm hesaplar için ortak kullanılacak tweetleri üretir."""
-        logger.info("Global tweet üretimi başlıyor...")
-        
+    async def _generate_global_tweets(self, target_keywords: list, llm_settings: LLMSettings, tweet_count: int, user_handle: str = None) -> list:
+        """Kullanıcıdan gelen sayı kadar tweet üretir. Anahtar kelimeler azsa döngüyle tekrar eder. Kullanıcı adı varsa tweetin sonuna ekler."""
+        logger.info(f"Global tweet üretimi başlıyor... Hedef tweet sayısı: {tweet_count}")
         llm_service = LLMService(config_loader=self.config_loader)
         global_tweets = []
         
-        # Her keyword için bir tweet üret
-        for keyword in target_keywords:
-            logger.info(f"Global tweet üretimi için keyword: '{keyword}'")
+        if not target_keywords:
+            logger.warning("Tweet üretimi için anahtar kelime yok!")
+            return []
+        
+
+        
+        for i in range(tweet_count):
+            keyword = target_keywords[i % len(target_keywords)]
+            logger.info(f"Global tweet üretimi için keyword: '{keyword}' (tweet {i+1}/{tweet_count})")
             
-            # AI tweet üretimi için prompt
             if keyword.startswith('#'):
                 hashtag_without_hash = keyword[1:]
                 prompt = f"'{hashtag_without_hash}' hashtag'i ile ilgili etkileyici bir tweet yaz. Sadece tweet'i yaz, başka açıklama yapma."
@@ -70,8 +74,6 @@ class TwitterOrchestrator:
                 prompt = f"'{keyword}' konusu ile ilgili etkileyici bir tweet yaz. Sadece tweet'i yaz, başka açıklama yapma."
             
             logger.info(f"Global tweet üretimi prompt: {prompt}")
-            
-            # AI tweet üretimi
             generated_text = await llm_service.generate_text(
                 prompt=prompt,
                 model=llm_settings.model_name_override,
@@ -82,11 +84,19 @@ class TwitterOrchestrator:
             if generated_text:
                 logger.info(f"Global tweet üretildi: {generated_text[:100]}...")
                 
-                # Tweet uzunluğunu kontrol et (280 karakter sınırı)
-                if len(generated_text) > 280:
-                    final_tweet_text = f"{generated_text[:277]}..."
+                # Tweet uzunluğunu kontrol et
+                final_tweet_text = generated_text
+                if user_handle:
+                    # @ işareti yoksa ekle
+                    if not user_handle.startswith('@'):
+                        user_handle = f"@{user_handle}"
+                    final_tweet_text = f"{generated_text} {user_handle}"
+                    if len(final_tweet_text) > 280:
+                        max_text_length = 279 - len(f" {user_handle}") - 3  # 3 karakter ... için
+                        final_tweet_text = f"{generated_text[:max_text_length]}... {user_handle}"
                 else:
-                    final_tweet_text = generated_text
+                    if len(generated_text) > 280:
+                        final_tweet_text = f"{generated_text[:277]}..."
                 
                 global_tweets.append(final_tweet_text)
                 logger.info(f"Global tweet eklendi: {final_tweet_text[:50]}...")
@@ -227,8 +237,11 @@ class TwitterOrchestrator:
             if target_keywords_for_account and tweets_made_this_account < tweets_per_account and self.global_tweets:
                 logger.info(f"[{account.account_id}] Global tweetleri kullanarak tweet atma başlıyor. {len(self.global_tweets)} global tweet mevcut.")
                 
-                # Global tweetleri sırayla kullan
-                for i, global_tweet in enumerate(self.global_tweets):
+                # Her hesap için random 3 tweet seç
+                import random
+                selected_tweets = random.sample(self.global_tweets, min(tweets_per_account, len(self.global_tweets)))
+                
+                for i, global_tweet in enumerate(selected_tweets):
                     if tweets_made_this_account >= tweets_per_account:
                         logger.info(f"[{account.account_id}] Tweet limiti doldu ({tweets_per_account}). Durduruluyor.")
                         break
@@ -241,6 +254,20 @@ class TwitterOrchestrator:
                     if success:
                         logger.info(f"[{account.account_id}] Global tweet {i+1} başarıyla atıldı!")
                         tweets_made_this_account += 1
+                        # Tweetten sonra home'a dön, bekle ve scroll yap
+                        try:
+                            publisher.browser_manager.navigate_to("https://x.com/home")
+                            wait_time = random.uniform(4, 8)
+                            logger.info(f"[{account.account_id}] Home sayfasında {wait_time:.1f} sn bekleniyor...")
+                            await asyncio.sleep(wait_time)
+                            # Scroll aşağı-yukarı
+                            for _ in range(random.randint(1, 3)):
+                                scroll_amount = random.randint(-400, 400)
+                                publisher.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                                logger.info(f"[{account.account_id}] Home'da {scroll_amount} px scroll yapıldı.")
+                                await asyncio.sleep(random.uniform(0.7, 1.5))
+                        except Exception as e:
+                            logger.warning(f"[{account.account_id}] Home/scroll işlemi sırasında hata: {e}")
                         await asyncio.sleep(random.uniform(1, 3))  # Daha kısa bekleme
                     else:
                         logger.error(f"[{account.account_id}] Global tweet {i+1} atılamadı!")
@@ -261,18 +288,25 @@ class TwitterOrchestrator:
                     
                     logger.info(f"[{account.account_id}] Global repost tweet {i+1} atılıyor: {repost_data['tweet_text'][:50]}...")
                     
-                    new_tweet_content = TweetContent(text=repost_data['tweet_text'])
-                    success = await publisher.post_new_tweet(new_tweet_content, llm_settings=llm_for_post)
+                    # Gerçek retweet fonksiyonunu çağır
+                    from src.data_models import ScrapedTweet
+                    scraped_tweet = ScrapedTweet(
+                        tweet_id=repost_data['original_tweet_id'],
+                        user_handle=repost_data.get('original_user_handle'),
+                        text_content=repost_data['tweet_text'],
+                        tweet_url=f"https://x.com/{repost_data.get('original_user_handle','')}/status/{repost_data['original_tweet_id']}"
+                    )
+                    success = await publisher.retweet_tweet(scraped_tweet)
                     
                     if success:
-                        logger.info(f"[{account.account_id}] Global repost tweet {i+1} başarıyla atıldı!")
+                        logger.info(f"[{account.account_id}] Global repost tweet {i+1} başarıyla retweetlendi!")
                         action_key = f"repost_{account.account_id}_{repost_data['original_tweet_id']}"
                         self.file_handler.save_processed_action_key(action_key, timestamp=datetime.now().isoformat())
                         self.processed_action_keys.add(action_key)
                         tweets_made_this_account += 1
                         await asyncio.sleep(random.uniform(1, 3))  # Daha kısa bekleme
                     else:
-                        logger.error(f"[{account.account_id}] Global repost tweet {i+1} atılamadı!")
+                        logger.error(f"[{account.account_id}] Global repost tweet {i+1} retweetlenemedi!")
                 
                 logger.info(f"[{account.account_id}] Global repost tweet atma tamamlandı. Toplam tweet atıldı: {tweets_made_this_account}")
             elif automation_settings and 'action_config' in automation_settings and automation_settings['action_config'].get('enable_keyword_reposts'):
@@ -395,7 +429,9 @@ class TwitterOrchestrator:
                 return
             
             if llm_settings_for_global_tweets:
-                self.global_tweets = await self._generate_global_tweets(target_keywords_for_global_tweets, llm_settings_for_global_tweets)
+                tweets_per_account = automation_settings.get('tweets_per_account', 3)
+                user_handle = automation_settings.get('action_config', {}).get('user_handle', None)
+                self.global_tweets = await self._generate_global_tweets(target_keywords_for_global_tweets, llm_settings_for_global_tweets, tweets_per_account, user_handle=user_handle)
                 logger.info(f"Global tweet üretimi tamamlandı. Toplam {len(self.global_tweets)} tweet üretildi.")
                 
                 # Global repost tweet üretimi

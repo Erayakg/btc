@@ -30,12 +30,17 @@ class ActionConfig(BaseModel): # This can be global or per-account
     # Keyword-based reposting
     enable_keyword_reposts: bool = Field(True, description="Enable reposting tweets based on keywords.")
     max_reposts_per_keyword: int = Field(2, description="Max reposts to make per keyword per run.")
+    
+
 
     # Engagement specific controls
     enable_liking_tweets: bool = Field(True, description="Enable liking tweets.")
     max_likes_per_run: int = Field(5, description="Max tweets to like per run.")
     like_tweets_from_keywords: Optional[List[str]] = Field(default_factory=list, description="Keywords to search for tweets to like.")
     avoid_replying_to_own_tweets: bool = Field(True, description="Prevent interacting with the account's own tweets.")
+
+    # Kullanıcı adı (tweetlerin sonuna eklenecek)
+    user_handle: Optional[str] = Field(None, description="Tweetlerin sonuna eklenecek kullanıcı adı (örn: '@kullanici_adi')")
 
     # LLM settings for different actions
     llm_settings_for_post: LLMSettings = Field(default_factory=LLMSettings)

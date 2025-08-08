@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, send_from_directory
+import werkzeug
 import json
 import os
 import subprocess
@@ -66,7 +67,7 @@ def run_main_python():
     try:
         # main.py'yi çalıştır - headless mod için environment variable set et
         env = os.environ.copy()
-        env['BROWSER_HEADLESS'] = 'true'  # Firefox'un görünmemesi için
+        env['BROWSER_HEADLESS'] = 'true'  # Chrome'un görünmemesi için
         
         # Settings dosyasının güncel olduğundan emin ol
         logger.info("Güncel settings.json dosyası kullanılıyor...")
@@ -111,7 +112,7 @@ def run_main_python():
 @app.route('/')
 def index():
     """Ana sayfa"""
-    return app.send_static_file('web_interface.html')
+    return send_from_directory('static', 'web_interface.html')
 
 @app.route('/api/save-settings', methods=['POST'])
 def save_settings_route():
@@ -152,6 +153,7 @@ def save_settings_route():
                     'enable_keyword_reposts': action_config_data.get('enable_keyword_reposts', True),
                     'max_reposts_per_keyword': int(action_config_data.get('max_reposts_per_keyword', 2)),
                     'target_keywords': action_config_data.get('target_keywords', []),
+                    'user_handle': action_config_data.get('user_handle', ''),
                     'llm_settings_for_post': {
                         'service_preference': 'gemini',
                         'model_name_override': action_config_data.get('llm_settings_for_post', {}).get('model_name_override', 'gemini-1.5-flash'),
@@ -246,6 +248,139 @@ def get_settings():
     """Mevcut ayarları al"""
     settings = load_settings()
     return jsonify(settings)
+
+@app.route('/add_accounts', methods=['POST'])
+def add_accounts():
+    """fetchaccount.py'yi çalıştır"""
+    global process_logs
+    
+    try:
+        # fetchaccount.py'yi çalıştır
+        logger.info("fetchaccount.py çalıştırılıyor...")
+        process_logs.append("[INFO] fetchaccount.py çalıştırılıyor...")
+        
+        # Çalışma dizinini değiştir
+        original_cwd = os.getcwd()
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(script_dir)
+        
+        print(f"[DEBUG] Çalışma dizini: {os.getcwd()}")
+        print(f"[DEBUG] Script yolu: {os.path.join(script_dir, 'config/fetchaccount.py')}")
+        
+        # fetchaccount.py'yi doğrudan import edip çalıştır
+        import sys
+        sys.path.insert(0, script_dir)
+        
+        # fetchaccount.py'yi import et ve main fonksiyonunu çalıştır
+        try:
+            import config.fetchaccount as fetchaccount
+            process_logs.append("[INFO] fetchaccount.py import edildi, çalıştırılıyor...")
+            
+            # fetchaccount.py'nin main bloğunu çalıştır
+            if hasattr(fetchaccount, '__main__'):
+                # fetchaccount.py'nin main fonksiyonunu çağır
+                fetchaccount.main()
+            else:
+                # fetchaccount.py'yi subprocess ile çalıştır
+                process = subprocess.Popen(
+                    [sys.executable, '-u', 'config/fetchaccount.py'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    bufsize=0,
+                    cwd=script_dir,
+                    env=os.environ.copy()
+                )
+                
+                # Logları oku
+                while True:
+                    line = process.stdout.readline()
+                    if not line and process.poll() is not None:
+                        break
+                    if line:
+                        line = line.strip()
+                        if line:
+                            timestamp = datetime.now().strftime("%H:%M:%S")
+                            log_entry = f"[{timestamp}] {line}"
+                            process_logs.append(log_entry)
+                            print(log_entry)
+                            logger.info(line)
+                            if len(process_logs) > 100:
+                                process_logs = process_logs[-100:]
+                
+                return_code = process.wait()
+            
+            # Çalışma dizinini geri al
+            os.chdir(original_cwd)
+            
+            success_msg = "Hesaplar başarıyla eklendi! Logları kontrol edin."
+            process_logs.append(f"[{datetime.now().strftime('%H:%M:%S')}] {success_msg}")
+            return jsonify({'success': True, 'message': success_msg})
+            
+        except Exception as e:
+            error_msg = f"fetchaccount.py çalıştırılırken hata: {str(e)}"
+            process_logs.append(f"[{datetime.now().strftime('%H:%M:%S')}] {error_msg}")
+            logger.error(error_msg)
+            return jsonify({'success': False, 'message': error_msg})
+            
+    except Exception as e:
+        error_msg = f"Hesaplar eklenirken hata: {str(e)}"
+        logger.error(error_msg)
+        process_logs.append(f"[{datetime.now().strftime('%H:%M:%S')}] {error_msg}")
+        return jsonify({'success': False, 'message': error_msg})
+
+@app.route('/upload_accounts', methods=['POST'])
+def upload_accounts():
+    """JSON dosyalarını config/accounts klasörüne yükle"""
+    try:
+        # config/accounts klasörünü oluştur
+        accounts_dir = 'config/accounts'
+        os.makedirs(accounts_dir, exist_ok=True)
+        
+        uploaded_count = 0
+        uploaded_files = []
+        
+        # Yüklenen dosyaları işle
+        if 'files' in request.files:
+            files = request.files.getlist('files')
+            
+            for file in files:
+                if file and file.filename:
+                    # Dosya adını güvenli hale getir
+                    filename = werkzeug.utils.secure_filename(file.filename)
+                    
+                    # Sadece JSON dosyalarını kabul et
+                    if filename.endswith('.json'):
+                        file_path = os.path.join(accounts_dir, filename)
+                        
+                        # Dosyayı kaydet
+                        file.save(file_path)
+                        uploaded_count += 1
+                        uploaded_files.append(filename)
+                        
+                        logger.info(f"Dosya yüklendi: {filename}")
+                    else:
+                        logger.warning(f"JSON olmayan dosya reddedildi: {filename}")
+        
+        if uploaded_count > 0:
+            success_msg = f"{uploaded_count} dosya başarıyla yüklendi: {', '.join(uploaded_files)}"
+            logger.info(success_msg)
+            return jsonify({
+                'success': True, 
+                'message': success_msg,
+                'uploaded_count': uploaded_count,
+                'uploaded_files': uploaded_files
+            })
+        else:
+            return jsonify({
+                'success': False, 
+                'message': 'Yüklenecek JSON dosyası bulunamadı!'
+            })
+            
+    except Exception as e:
+        error_msg = f"Dosya yükleme hatası: {str(e)}"
+        logger.error(error_msg)
+        return jsonify({'success': False, 'message': error_msg})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000) 

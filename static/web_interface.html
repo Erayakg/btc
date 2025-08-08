@@ -260,6 +260,85 @@
         .log-entry.success {
             color: #28a745;
         }
+        
+        .file-upload-area {
+            margin: 20px 0;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-zone:hover {
+            border-color: #764ba2;
+            background: #e9ecef;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 10px;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .uploaded-files {
+            margin-top: 20px;
+        }
+        
+        .file-list {
+            margin-top: 10px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .file-item .file-name {
+            font-weight: 500;
+        }
+        
+        .file-item .file-size {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .file-item .remove-file {
+            color: #dc3545;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -272,12 +351,42 @@
         <div class="content">
             <div class="tabs">
                 <div class="tab active" onclick="showTab('main')">⚙️ Ana Ayarlar</div>
+                <div class="tab" onclick="showTab('files')">📁 Dosya Yükleme</div>
                 <div class="tab" onclick="showTab('api')">🔑 API Ayarları</div>
                 <div class="tab" onclick="showTab('stats')">📊 İstatistikler</div>
                 <div class="tab" onclick="showTab('logs')">📝 Loglar</div>
             </div>
             
-            <div id="status" class="status"></div>
+            <div id="status" class="status">            </div>
+            
+            <!-- Dosya Yükleme -->
+            <div id="files" class="tab-content">
+                <div class="section">
+                    <h2>📁 Hesap Dosyaları Yükleme</h2>
+                    
+                    <div class="file-upload-area" id="file_upload_area">
+                        <div class="upload-zone" id="upload_zone">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">
+                                <p>JSON dosyalarını buraya sürükleyip bırakın</p>
+                                <p>veya</p>
+                                <button class="btn btn-outline" onclick="document.getElementById('file_input').click()">Dosya Seç</button>
+                            </div>
+                        </div>
+                        <input type="file" id="file_input" multiple accept=".json" style="display: none;">
+                    </div>
+                    
+                    <div class="uploaded-files" id="uploaded_files">
+                        <h3>Yüklenen Dosyalar:</h3>
+                        <div class="file-list" id="file_list"></div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="uploadFiles()">💾 Dosyaları Kaydet</button>
+                        <button class="btn btn-secondary" onclick="clearUploadedFiles()">🗑️ Temizle</button>
+                    </div>
+                </div>
+            </div>
             
             <!-- Ana Ayarlar -->
             <div id="main" class="tab-content active">
@@ -302,7 +411,16 @@
                             <label for="response_interval">Yanıt Aralığı (saniye):</label>
                             <input type="number" id="response_interval" value="300" min="60">
                         </div>
+                        <div class="form-group">
+                            <label for="user_handle_input">Kullanıcı Adı (@username):</label>
+                            <input type="text" id="user_handle_input" placeholder="@kullanici_adi" style="width: 100%;">
+                            <small style="color: #666; margin-top: 5px; display: block;">
+                                Tweet'lerin sonuna eklenecek kullanıcı adı (örn: @kullanici_adi)
+                            </small>
+                        </div>
                     </div>
+                    
+
                 </div>
                 
                 <div class="section">
@@ -344,6 +462,8 @@
                         <input type="number" id="max_reposts_per_keyword" value="2" min="1" max="10">
                     </div>
                 </div>
+                
+
                 
                 <div class="section">
                     <h2>🤖 AI Ayarları</h2>
@@ -431,6 +551,7 @@
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="loadSettings()">📥 Ayarları Yükle</button>
                 <button class="btn" onclick="saveSettings()">💾 Ayarları Kaydet</button>
+                <button class="btn btn-info" onclick="addAccounts()">👥 Hesapları Ekle</button>
                 <button class="btn btn-success" onclick="startAutomation()">🚀 Otomasyonu Başlat</button>
                 <button class="btn btn-danger" onclick="stopAutomation()">⏹️ Otomasyonu Durdur</button>
             </div>
@@ -440,6 +561,7 @@
     <script>
         let keywords = ['DersMaster', 'Eğitimde Yapay Zeka', 'özel ders'];
         let likeKeywords = ['eğitim', 'öğrenme', 'yapay zeka'];
+        let uploadedFiles = [];
         
         function showTab(tabName) {
             // Hide all tab contents
@@ -547,6 +669,7 @@
                         enable_keyword_reposts: document.getElementById('enable_keyword_reposts').checked,
                         max_reposts_per_keyword: parseInt(document.getElementById('max_reposts_per_keyword').value),
                         target_keywords: keywords,
+                        user_handle: document.getElementById('user_handle_input').value.trim(),
                         llm_settings_for_post: {
                             service_preference: 'gemini',
                             model_name_override: document.getElementById('llm_model').value,
@@ -599,6 +722,7 @@
                 document.getElementById('max_likes_per_run').value = actionConfig.max_likes_per_run || 5;
                 document.getElementById('enable_keyword_reposts').checked = actionConfig.enable_keyword_reposts || false;
                 document.getElementById('max_reposts_per_keyword').value = actionConfig.max_reposts_per_keyword || 2;
+                document.getElementById('user_handle_input').value = actionConfig.user_handle || '';
                 
                 // Load keywords
                 keywords = actionConfig.target_keywords || [];
@@ -709,6 +833,139 @@
             document.getElementById('log_container').innerHTML = '<div class="log-entry">Loglar temizlendi...</div>';
         }
         
+        function addAccounts() {
+            showStatus('Hesaplar ekleniyor...', 'info');
+            
+            fetch('/add_accounts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('Hesaplar başarıyla eklendi! Logları kontrol edin.', 'success');
+                    // Logları yenile
+                    setTimeout(refreshLogs, 1000);
+                } else {
+                    showStatus('Hesaplar eklenirken hata oluştu: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showStatus('Bağlantı hatası: ' + error.message, 'error');
+            });
+        }
+        
+        // Dosya yükleme fonksiyonları
+        function initializeFileUpload() {
+            const uploadZone = document.getElementById('upload_zone');
+            const fileInput = document.getElementById('file_input');
+            
+            // Drag and drop events
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+            
+            uploadZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+            });
+            
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+            });
+        }
+        
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                    if (!uploadedFiles.find(f => f.name === file.name)) {
+                        uploadedFiles.push(file);
+                        updateFileList();
+                    }
+                }
+            });
+        }
+        
+        function updateFileList() {
+            const container = document.getElementById('file_list');
+            container.innerHTML = '';
+            
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
+                    </div>
+                    <span class="remove-file" onclick="removeFile(${index})">&times;</span>
+                `;
+                container.appendChild(fileItem);
+            });
+        }
+        
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            updateFileList();
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function uploadFiles() {
+            if (uploadedFiles.length === 0) {
+                showStatus('Yüklenecek dosya bulunamadı!', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            uploadedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            showStatus('Dosyalar yükleniyor...', 'info');
+            
+            fetch('/upload_accounts', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus(`${data.uploaded_count} dosya başarıyla yüklendi!`, 'success');
+                    uploadedFiles = [];
+                    updateFileList();
+                } else {
+                    showStatus('Dosya yükleme hatası: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showStatus('Bağlantı hatası: ' + error.message, 'error');
+            });
+        }
+        
+        function clearUploadedFiles() {
+            uploadedFiles = [];
+            updateFileList();
+            document.getElementById('file_input').value = '';
+        }
+        
         // Event listeners
         document.getElementById('keyword_input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -725,6 +982,7 @@
         // Initialize
         updateKeywordList();
         updateLikeKeywordList();
+        initializeFileUpload();
         
         // Auto refresh stats and logs every 30 seconds
         setInterval(refreshStats, 30000);

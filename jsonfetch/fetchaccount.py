@@ -20,7 +20,7 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 ACCOUNTS_DIR = "accounts"
 COOKIE_DIR = "config"
 OUTPUT_FILE = "accounts.json"
-MAX_WORKERS = 3  # Tek işlem ile çalıştır, daha güvenli
+MAX_WORKERS = 1  # Tek işlem ile çalıştır, daha güvenli
 
 # accounts klasörünü oluştur
 os.makedirs(ACCOUNTS_DIR, exist_ok=True)

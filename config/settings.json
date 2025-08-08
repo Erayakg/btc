@@ -4,7 +4,7 @@
   },
   "twitter_automation": {
     "response_interval_seconds": 300,
-    "tweets_per_account": 3,
+    "tweets_per_account": 1,
     "media_directory": "media_files",
     "processed_tweets_file": "processed_tweets_log.csv",
     "cookie_file_per_account_in_accounts_json": true,
@@ -23,8 +23,9 @@
       "enable_keyword_reposts": false,
       "max_reposts_per_keyword": 2,
       "target_keywords": [
-        "#yeteneksizsizsiniz"
+        "DersMaster"
       ],
+      "user_handle": "@DersMaster",
       "llm_settings_for_post": {
         "service_preference": "gemini",
         "model_name_override": "gemini-1.5-flash",
@@ -52,7 +53,7 @@
     }
   },
   "browser_settings": {
-    "type": "firefox",
+    "type": "chrome",
     "headless": false,
     "user_agent_generation": "random",
     "custom_user_agent": null,

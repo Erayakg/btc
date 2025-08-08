@@ -9,11 +9,8 @@ from selenium import webdriver
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.common.exceptions import WebDriverException, TimeoutException, InvalidArgumentException
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
 from fake_headers import Headers
 
 # Adjust import path for ConfigLoader and setup_logger
@@ -137,7 +134,7 @@ class BrowserManager:
             return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
 
 
-    def _configure_driver_options(self, options: Union[ChromeOptions, FirefoxOptions]):
+    def _configure_driver_options(self, options: ChromeOptions):
         """Applies common and browser-specific options."""
         user_agent = self._get_user_agent()
         options.add_argument(f"user-agent={user_agent}")
@@ -148,9 +145,19 @@ class BrowserManager:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         
-        window_size = self.browser_settings.get('window_size') # e.g., "1920,1080"
-        if window_size:
-            options.add_argument(f"--window-size={window_size}")
+        # Bot tespitini önlemek için ek ayarlar
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-plugins")
+        options.add_argument("--disable-images")  # Hızlı yükleme için
+        options.add_argument("--disable-javascript")  # Güvenlik için
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+        
+        window_size = self.browser_settings.get('window_size', '1920,1080') # Default window size
+        options.add_argument(f"--window-size={window_size}")
 
         proxy = self.browser_settings.get('proxy') # e.g. "http://user:pass@host:port"
         if proxy:
@@ -173,7 +180,7 @@ class BrowserManager:
             logger.debug("Returning existing active WebDriver instance.")
             return self.driver
 
-        browser_type = self.browser_settings.get('type', 'firefox').lower()
+        browser_type = self.browser_settings.get('type', 'chrome').lower()
         logger.info(f"Initializing {browser_type} WebDriver...")
         
         # Determine driver manager path
@@ -182,32 +189,39 @@ class BrowserManager:
         try:
             if browser_type == 'chrome':
                 options = self._configure_driver_options(ChromeOptions())
+                
+                # Bot tespitini önlemek için Chrome ayarları
+                options.add_argument("--disable-blink-features=AutomationControlled")
+                options.add_experimental_option("excludeSwitches", ["enable-automation"])
+                options.add_experimental_option('useAutomationExtension', False)
+                
+                # Random user agent
+                user_agents = [
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+                ]
+                import random
+                options.add_argument(f"--user-agent={random.choice(user_agents)}")
+                
                 # Pass service arguments from config if available
                 service_args = self.browser_settings.get('chrome_service_args', [])
-                service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
+                
+                # Önce local chromedriver.exe'yi kontrol et
+                local_chromedriver_path = PROJECT_ROOT / "chromedriver.exe"
+                if local_chromedriver_path.exists():
+                    logger.info(f"Using local chromedriver: {local_chromedriver_path}")
+                    service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                else:
+                    logger.info("Local chromedriver not found, using WebDriver Manager")
+                    service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
+                
                 self.driver = webdriver.Chrome(service=service, options=options)
-            elif browser_type == 'firefox':
-                options = self._configure_driver_options(FirefoxOptions())
-                service_args = self.browser_settings.get('firefox_service_args', [])
                 
-                # Set Firefox binary path
-                firefox_binary_path = "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
-                if Path(firefox_binary_path).exists():
-                    logger.info(f"Using Firefox binary: {firefox_binary_path}")
-                    options.binary_location = firefox_binary_path
-                else:
-                    logger.warning(f"Firefox binary not found at {firefox_binary_path}")
-                
-                # Check if local geckodriver exists
-                local_geckodriver_path = PROJECT_ROOT / "geckodriver-v0.36.0-win32" / "geckodriver.exe"
-                if local_geckodriver_path.exists():
-                    logger.info(f"Using local geckodriver: {local_geckodriver_path}")
-                    service = FirefoxService(str(local_geckodriver_path), service_args=service_args if service_args else None)
-                else:
-                    logger.info("Local geckodriver not found, using WebDriver Manager")
-                    service = FirefoxService(GeckoDriverManager().install(), service_args=service_args if service_args else None)
-                
-                self.driver = webdriver.Firefox(service=service, options=options)
+                # JavaScript ile bot tespitini önle
+                self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                self.driver.execute_script("Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]})")
+                self.driver.execute_script("Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']})")
             else:
                 logger.error(f"Unsupported browser type: {browser_type}. Cannot initialize WebDriver.")
                 raise WebDriverException(f"Unsupported browser type: {browser_type}")
