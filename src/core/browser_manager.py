@@ -139,8 +139,8 @@ class BrowserManager:
         user_agent = self._get_user_agent()
         options.add_argument(f"user-agent={user_agent}")
 
-        # Browser görünür olsun - headless modu kapat
-        # options.add_argument("--headless")  # COMMENTED OUT FOR VISIBLE BROWSER
+        # Browser gizli olsun - headless modu aç
+        options.add_argument("--headless")  # ENABLED FOR HIDDEN BROWSER
         options.add_argument("--disable-gpu") # Often needed for headless
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
