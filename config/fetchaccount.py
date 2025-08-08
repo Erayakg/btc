@@ -104,20 +104,29 @@ def get_chromedriver_path():
     """
     ChromeDriver'ı yerel olarak bul, yoksa bir kez indir.
     """
+    import platform
+    
+    # Platform'a göre chromedriver dosya adını belirle
+    if platform.system() == "Windows":
+        chromedriver_name = "chromedriver.exe"
+    else:
+        chromedriver_name = "chromedriver"
+    
     # Önce manuel/geçerli bir yol dene
     local_paths = [
-        os.path.join(os.getcwd(), "chromedriver.exe"),  # Ana dizinde
-        os.path.join(os.getcwd(), "chromedriver"),
-        os.path.join(os.getcwd(), "chromedriver", "chromedriver.exe"),
+        os.path.join(os.getcwd(), chromedriver_name),  # Ana dizinde
+        os.path.join(os.getcwd(), "chromedriver-win64", "chromedriver.exe"),  # Windows klasörü
         "/usr/local/bin/chromedriver",
         "/usr/bin/chromedriver"
     ]
+    
     for path in local_paths:
         if os.path.exists(path):
+            print(f"[INFO] ChromeDriver bulundu: {path}")
             return path
 
     # Eğer bulamazsan hata ver
-    print(f"[ERROR] ChromeDriver bulunamadi: {os.path.join(os.getcwd(), 'chromedriver.exe')}")
+    print(f"[ERROR] ChromeDriver bulunamadi: {os.path.join(os.getcwd(), chromedriver_name)}")
     return None
 
 def setup_driver():
@@ -136,6 +145,9 @@ def setup_driver():
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
+        
+        # Headless modu ekle (Chrome gizli çalışsın)
+        options.add_argument("--headless")
         
         # Random user agent
         user_agents = [
@@ -165,9 +177,6 @@ def setup_driver():
         # print(f"[INFO] Proxy kullaniliyor: {selected_proxy}")
         print(f"[INFO] Proxy kullanilmiyor - yerel baglanti")
         
-        # Görünür mod (headless değil)
-        # options.add_argument("--headless")  # Görünür mod için kapatıldı
-        
         # Pencere boyutu
         options.add_argument("--window-size=1920,1080")
         
@@ -193,7 +202,7 @@ def setup_driver():
         driver.execute_script("Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]})")
         driver.execute_script("Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']})")
         
-        print("[SUCCESS] Chrome basariyla baslatildi")
+        print("[SUCCESS] Chrome basariyla baslatildi (headless mod)")
         return driver
     except Exception as e:
         print(f"[ERROR] Chrome baslatilamadi: {e}")

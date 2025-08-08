@@ -207,14 +207,26 @@ class BrowserManager:
                 # Pass service arguments from config if available
                 service_args = self.browser_settings.get('chrome_service_args', [])
                 
-                # Önce local chromedriver.exe'yi kontrol et
-                local_chromedriver_path = PROJECT_ROOT / "chromedriver.exe"
-                if local_chromedriver_path.exists():
-                    logger.info(f"Using local chromedriver: {local_chromedriver_path}")
-                    service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                # Linux'ta local chromedriver'ı kontrol et, yoksa WebDriver Manager kullan
+                import platform
+                if platform.system() == "Windows":
+                    # Windows'ta local chromedriver.exe'yi kontrol et
+                    local_chromedriver_path = PROJECT_ROOT / "chromedriver.exe"
+                    if local_chromedriver_path.exists():
+                        logger.info(f"Using local chromedriver: {local_chromedriver_path}")
+                        service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                    else:
+                        logger.info("Local chromedriver not found, using WebDriver Manager")
+                        service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
                 else:
-                    logger.info("Local chromedriver not found, using WebDriver Manager")
-                    service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
+                    # Linux'ta local chromedriver'ı kontrol et, yoksa WebDriver Manager kullan
+                    local_chromedriver_path = PROJECT_ROOT / "chromedriver"
+                    if local_chromedriver_path.exists():
+                        logger.info(f"Using local chromedriver: {local_chromedriver_path}")
+                        service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                    else:
+                        logger.info("Local chromedriver not found, using WebDriver Manager")
+                        service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
                 
                 self.driver = webdriver.Chrome(service=service, options=options)
                 
