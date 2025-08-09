@@ -149,6 +149,33 @@ def setup_driver():
         # Headless modu ekle (Chrome gizli çalışsın)
         options.add_argument("--headless")
         
+        # Boş disk alanı olan dizini kullan (/home/erayb/btc)
+        import uuid
+        temp_base_dir = "/home/erayb/btc/temp_chrome_data"
+        os.makedirs(temp_base_dir, exist_ok=True)
+        
+        # Benzersiz user data directory oluştur
+        unique_id = str(uuid.uuid4())[:8]
+        user_data_dir = os.path.join(temp_base_dir, f"chrome_user_data_{unique_id}")
+        os.makedirs(user_data_dir, exist_ok=True)
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        print(f"[INFO] Chrome user data directory: {user_data_dir}")
+        
+        # Disk alanı sorunlarını önlemek için ek ayarlar
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-plugins")
+        options.add_argument("--disable-images")
+        options.add_argument("--disable-javascript")
+        options.add_argument("--disable-default-apps")
+        options.add_argument("--disable-sync")
+        options.add_argument("--disable-translate")
+        options.add_argument("--disable-background-networking")
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-client-side-phishing-detection")
+        options.add_argument("--disable-component-update")
+        options.add_argument("--disable-domain-reliability")
+        options.add_argument("--disable-component-extensions-with-background-pages")
+        
         # Random user agent
         user_agents = [
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -543,6 +570,8 @@ def login_and_save_cookies(username, password, totp_secret=None, email_address=N
                 json.dump(driver.get_cookies(), f, indent=2)
             print(f"[SUCCESS] Giris basarili, cookie kaydedildi: {cookie_path} ({username})")
             driver.quit()  # Her başarılı girişten sonra Chrome'u kapat
+            # Geçici dosyaları temizle
+            cleanup_single_temp_files(username)
             return True, f"config/configsub/{username}_cookies.json"
         else:
             print(f"[ERROR] Giris basarisiz, URL: {current_url} ({username})")
@@ -553,6 +582,8 @@ def login_and_save_cookies(username, password, totp_secret=None, email_address=N
             except:
                 pass
             driver.quit()  # Başarısız girişten sonra da Chrome'u kapat
+            # Geçici dosyaları temizle
+            cleanup_single_temp_files(username)
             return False, ""
     except Exception as e:
         print(f"[ERROR] Genel hata: {e} ({username})")
@@ -560,6 +591,8 @@ def login_and_save_cookies(username, password, totp_secret=None, email_address=N
             driver.quit()
         except:
             pass
+        # Geçici dosyaları temizle
+        cleanup_single_temp_files(username)
         return False, ""
 
 def process_account(account_data):
@@ -771,7 +804,53 @@ def main():
         print(f"[ERROR] {failed_count} hesap basarisiz oldu")
     
     print("=" * 80)
+    
+    # Geçici dosyaları temizle
+    cleanup_temp_files()
+    
     return True
+
+def cleanup_single_temp_files(username):
+    """Tek bir hesap için geçici Chrome dosyalarını temizle"""
+    try:
+        import shutil
+        import glob
+        
+        temp_base_dir = "/home/erayb/btc/temp_chrome_data"
+        if os.path.exists(temp_base_dir):
+            chrome_dirs = glob.glob(os.path.join(temp_base_dir, "chrome_user_data_*"))
+            
+            for chrome_dir in chrome_dirs:
+                try:
+                    if os.path.exists(chrome_dir):
+                        shutil.rmtree(chrome_dir, ignore_errors=True)
+                        print(f"[INFO] {username} - Geçici dosya temizlendi: {chrome_dir}")
+                except Exception as e:
+                    print(f"[WARNING] {username} - Temizleme hatasi {chrome_dir}: {e}")
+    except Exception as e:
+        print(f"[WARNING] {username} - Geçici dosya temizleme hatasi: {e}")
+
+def cleanup_temp_files():
+    """Geçici Chrome dosyalarını temizle"""
+    try:
+        import shutil
+        import glob
+        
+        temp_base_dir = "/home/erayb/btc/temp_chrome_data"
+        if os.path.exists(temp_base_dir):
+            chrome_dirs = glob.glob(os.path.join(temp_base_dir, "chrome_user_data_*"))
+            
+            for chrome_dir in chrome_dirs:
+                try:
+                    if os.path.exists(chrome_dir):
+                        shutil.rmtree(chrome_dir, ignore_errors=True)
+                        print(f"[INFO] Temizlendi: {chrome_dir}")
+                except Exception as e:
+                    print(f"[WARNING] Temizleme hatasi {chrome_dir}: {e}")
+            
+            print(f"[INFO] {len(chrome_dirs)} geçici Chrome dizini temizlendi")
+    except Exception as e:
+        print(f"[WARNING] Geçici dosya temizleme hatasi: {e}")
 
 if __name__ == "__main__":
     main()

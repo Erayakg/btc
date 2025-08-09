@@ -150,6 +150,18 @@ class BrowserManager:
         # Unique user data directory for each browser instance to prevent conflicts
         import uuid
         import tempfile
+        import os
+        
+        # Boş disk alanı olan dizini kullan (/home/erayb/btc)
+        temp_base_dir = "/home/erayb/btc/temp_chrome_data"
+        os.makedirs(temp_base_dir, exist_ok=True)
+        
+        # Basit benzersizlik
+        unique_id = str(uuid.uuid4())[:8]
+        user_data_dir = os.path.join(temp_base_dir, f"chrome_user_data_{unique_id}")
+        os.makedirs(user_data_dir, exist_ok=True)
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        logger.info(f"Using unique user data directory: {user_data_dir}")
 
         # Türkçe karakter desteği için encoding ayarları
         options.add_argument("--lang=tr-TR")
@@ -171,16 +183,31 @@ class BrowserManager:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
         
+        # Disk alanı sorunlarını önlemek için ek ayarlar
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-plugins")
+        options.add_argument("--disable-images")
+        options.add_argument("--disable-javascript")
+        options.add_argument("--disable-default-apps")
+        options.add_argument("--disable-sync")
+        options.add_argument("--disable-translate")
+        options.add_argument("--disable-background-networking")
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-client-side-phishing-detection")
+        options.add_argument("--disable-component-update")
+        options.add_argument("--disable-domain-reliability")
+        options.add_argument("--disable-component-extensions-with-background-pages")
+        
 
         
 
         
         # options.add_argument("--disable-javascript")  # Bu satırı kaldırdık
         
-        # Diğer ayarlar
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-plugins")
-        options.add_argument("--disable-images")  # Hızlı yükleme için
+        # Diğer ayarlar - zaten yukarıda eklendi, burada tekrar etmeye gerek yok
+        # options.add_argument("--disable-extensions")
+        # options.add_argument("--disable-plugins")
+        # options.add_argument("--disable-images")  # Hızlı yükleme için
         
 
         window_size = self.browser_settings.get('window_size', '1920,1080') # Default window size
@@ -396,21 +423,22 @@ class BrowserManager:
     def _cleanup_temp_directories(self):
         """Clean up temporary Chrome user data directories."""
         try:
-            import tempfile
             import shutil
             import glob
+            import os
             
-            # Find and remove temporary Chrome user data directories
-            temp_dir = tempfile.gettempdir()
-            chrome_dirs = glob.glob(os.path.join(temp_dir, "chrome_user_data_*"))
-            
-            for chrome_dir in chrome_dirs:
-                try:
-                    if os.path.exists(chrome_dir):
-                        shutil.rmtree(chrome_dir, ignore_errors=True)
-                        logger.debug(f"Cleaned up temporary directory: {chrome_dir}")
-                except Exception as e:
-                    logger.debug(f"Could not clean up directory {chrome_dir}: {e}")
+            # Find and remove temporary Chrome user data directories from our custom location
+            temp_base_dir = "/home/erayb/btc/temp_chrome_data"
+            if os.path.exists(temp_base_dir):
+                chrome_dirs = glob.glob(os.path.join(temp_base_dir, "chrome_user_data_*"))
+                
+                for chrome_dir in chrome_dirs:
+                    try:
+                        if os.path.exists(chrome_dir):
+                            shutil.rmtree(chrome_dir, ignore_errors=True)
+                            logger.debug(f"Cleaned up temporary directory: {chrome_dir}")
+                    except Exception as e:
+                        logger.debug(f"Could not clean up directory {chrome_dir}: {e}")
         except Exception as e:
             logger.debug(f"Error during temp directory cleanup: {e}")
 
