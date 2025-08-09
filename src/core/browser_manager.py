@@ -175,6 +175,24 @@ class BrowserManager:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
         
+        # Chrome stabilite ayarları - crash'leri önlemek için
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-backgrounding-occluded-windows")
+        options.add_argument("--disable-renderer-backgrounding")
+        options.add_argument("--disable-features=TranslateUI")
+        options.add_argument("--disable-ipc-flooding-protection")
+        options.add_argument("--disable-hang-monitor")
+        options.add_argument("--disable-prompt-on-repost")
+        options.add_argument("--disable-domain-reliability")
+        options.add_argument("--disable-component-extensions-with-background-pages")
+        options.add_argument("--disable-default-apps")
+        options.add_argument("--disable-sync")
+        options.add_argument("--disable-translate")
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+        options.add_argument("--disable-features=VizDisplayCompositor")
+        options.add_argument("--force-color-profile=srgb")
+        
         # Türkçe karakter desteği için JavaScript'i açık tut
         # options.add_argument("--disable-javascript")  # Bu satırı kaldırdık
         
@@ -182,12 +200,6 @@ class BrowserManager:
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-plugins")
         options.add_argument("--disable-images")  # Hızlı yükleme için
-        options.add_argument("--disable-web-security")
-        options.add_argument("--allow-running-insecure-content")
-        
-        # Encoding ayarları
-        options.add_argument("--force-color-profile=srgb")
-        options.add_argument("--disable-features=VizDisplayCompositor")
         
         window_size = self.browser_settings.get('window_size', '1920,1080') # Default window size
         options.add_argument(f"--window-size={window_size}")
@@ -219,124 +231,151 @@ class BrowserManager:
         # Determine driver manager path
         driver_manager_install_path = str(self.wdm_cache_path)
 
-        try:
-            if browser_type == 'chrome':
-                options = self._configure_driver_options(ChromeOptions())
-                
-                # Bot tespitini önlemek için Chrome ayarları
-                options.add_argument("--disable-blink-features=AutomationControlled")
-                options.add_experimental_option("excludeSwitches", ["enable-automation"])
-                options.add_experimental_option('useAutomationExtension', False)
-                
-                # Random user agent
-                user_agents = [
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
-                ]
-                import random
-                options.add_argument(f"--user-agent={random.choice(user_agents)}")
-                
-                # Pass service arguments from config if available
-                service_args = self.browser_settings.get('chrome_service_args', [])
-                
-                # Linux'ta local chromedriver'ı kontrol et, yoksa WebDriver Manager kullan
-                import platform
-                if platform.system() == "Windows":
-                    # Windows'ta local chromedriver.exe'yi kontrol et
-                    local_chromedriver_path = PROJECT_ROOT / "chromedriver.exe"
-                    if local_chromedriver_path.exists():
-                        logger.info(f"Using local chromedriver: {local_chromedriver_path}")
-                        service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
-                    else:
-                        logger.info("Local chromedriver not found, using WebDriver Manager")
-                        service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
-                else:
+        # Retry logic for Chrome initialization
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                if browser_type == 'chrome':
+                    options = self._configure_driver_options(ChromeOptions())
+                    
+                    # Bot tespitini önlemek için Chrome ayarları
+                    options.add_argument("--disable-blink-features=AutomationControlled")
+                    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+                    options.add_experimental_option('useAutomationExtension', False)
+                    
+                    # Random user agent
+                    user_agents = [
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+                    ]
+                    import random
+                    options.add_argument(f"--user-agent={random.choice(user_agents)}")
+                    
+                    # Pass service arguments from config if available
+                    service_args = self.browser_settings.get('chrome_service_args', [])
+                    
                     # Linux'ta local chromedriver'ı kontrol et, yoksa WebDriver Manager kullan
-                    local_chromedriver_path = PROJECT_ROOT / "chromedriver"
-                    if local_chromedriver_path.exists():
-                        logger.info(f"Using local chromedriver: {local_chromedriver_path}")
-                        service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                    import platform
+                    if platform.system() == "Windows":
+                        # Windows'ta local chromedriver.exe'yi kontrol et
+                        local_chromedriver_path = PROJECT_ROOT / "chromedriver.exe"
+                        if local_chromedriver_path.exists():
+                            logger.info(f"Using local chromedriver: {local_chromedriver_path}")
+                            service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                        else:
+                            logger.info("Local chromedriver not found, using WebDriver Manager")
+                            service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
                     else:
-                        logger.info("Local chromedriver not found, using WebDriver Manager")
-                        service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
-                
-                self.driver = webdriver.Chrome(service=service, options=options)
-                
-                # JavaScript ile bot tespitini önle
-                self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-                self.driver.execute_script("Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]})")
-                self.driver.execute_script("Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']})")
-            else:
-                logger.error(f"Unsupported browser type: {browser_type}. Cannot initialize WebDriver.")
-                raise WebDriverException(f"Unsupported browser type: {browser_type}")
-            
-            page_load_timeout = self.browser_settings.get('page_load_timeout_seconds', 15)  # Reduced to 15 seconds for faster failure
-            script_timeout = self.browser_settings.get('script_timeout_seconds', 15)  # Reduced to 15 seconds for faster failure
-            self.driver.set_page_load_timeout(page_load_timeout)
-            self.driver.set_script_timeout(script_timeout)
-            
-            logger.info(f"{browser_type.capitalize()} WebDriver initialized successfully.")
-
-            if self.cookies_data:
-                cookie_domain_url = self.browser_settings.get('cookie_domain_url')
-                if not cookie_domain_url:
-                    logger.warning("No 'cookie_domain_url' configured in browser_settings. Cookies might not be set correctly for some sites.")
-                    # For Twitter, always navigate to x.com first before setting cookies
-                    try:
-                        logger.debug("Navigating to https://x.com to set cookies.")
-                        self.driver.get("https://x.com")
-                        import time
-                        time.sleep(2)  # Wait for page to load
-                    except Exception as e:
-                        logger.error(f"Error navigating to x.com for cookies: {e}. Cookies may not be set correctly.")
+                        # Linux'ta local chromedriver'ı kontrol et, yoksa WebDriver Manager kullan
+                        local_chromedriver_path = PROJECT_ROOT / "chromedriver"
+                        if local_chromedriver_path.exists():
+                            logger.info(f"Using local chromedriver: {local_chromedriver_path}")
+                            service = ChromeService(str(local_chromedriver_path), service_args=service_args if service_args else None)
+                        else:
+                            logger.info("Local chromedriver not found, using WebDriver Manager")
+                            service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
+                    
+                    self.driver = webdriver.Chrome(service=service, options=options)
+                    
+                    # JavaScript ile bot tespitini önle
+                    self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                    self.driver.execute_script("Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]})")
+                    self.driver.execute_script("Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']})")
                 else:
-                    try:
-                        logger.debug(f"Navigating to {cookie_domain_url} to set cookies.")
-                        self.driver.get(cookie_domain_url)
-                    except Exception as e:
-                        logger.error(f"Error navigating to cookie domain {cookie_domain_url}: {e}. Cookies may not be set correctly.")
+                    logger.error(f"Unsupported browser type: {browser_type}. Cannot initialize WebDriver.")
+                    raise WebDriverException(f"Unsupported browser type: {browser_type}")
+                
+                page_load_timeout = self.browser_settings.get('page_load_timeout_seconds', 15)  # Reduced to 15 seconds for faster failure
+                script_timeout = self.browser_settings.get('script_timeout_seconds', 15)  # Reduced to 15 seconds for faster failure
+                self.driver.set_page_load_timeout(page_load_timeout)
+                self.driver.set_script_timeout(script_timeout)
+                
+                logger.info(f"{browser_type.capitalize()} WebDriver initialized successfully.")
 
-                for cookie_dict in self.cookies_data:
-                    # Ensure keys match Selenium's expectations, especially 'expires'
-                    selenium_cookie = {}
-                    for key, value in cookie_dict.items():
-                        if key == 'expires': # Pydantic model uses 'expires' for timestamp
-                            selenium_cookie['expiry'] = value # Selenium expects 'expiry' for timestamp
-                        elif key == 'httpOnly': # Selenium expects 'httpOnly'
-                            selenium_cookie['httpOnly'] = value
-                        elif key in ['name', 'value', 'path', 'domain', 'secure', 'sameSite']:
-                            selenium_cookie[key] = value
-                        # Silently ignore other keys not recognized by Selenium's add_cookie
-                    
-                    # Fix domain issues - if cookie has .x.com domain, use x.com for Selenium
-                    if 'domain' in selenium_cookie and selenium_cookie['domain'] == '.x.com':
-                        selenium_cookie['domain'] = 'x.com'
-                        logger.debug(f"Fixed cookie domain from .x.com to x.com for {selenium_cookie.get('name', 'unknown')}")
-                    
-                    if 'name' in selenium_cookie and 'value' in selenium_cookie:
+                if self.cookies_data:
+                    cookie_domain_url = self.browser_settings.get('cookie_domain_url')
+                    if not cookie_domain_url:
+                        logger.warning("No 'cookie_domain_url' configured in browser_settings. Cookies might not be set correctly for some sites.")
+                        # For Twitter, always navigate to x.com first before setting cookies
+                        try:
+                            logger.debug("Navigating to https://x.com to set cookies.")
+                            self.driver.get("https://x.com")
+                            import time
+                            time.sleep(2)  # Wait for page to load
+                        except Exception as e:
+                            logger.error(f"Error navigating to x.com for cookies: {e}. Cookies may not be set correctly.")
+                    else:
+                        try:
+                            logger.debug(f"Navigating to {cookie_domain_url} to set cookies.")
+                            self.driver.get(cookie_domain_url)
+                        except Exception as e:
+                            logger.error(f"Error navigating to cookie domain {cookie_domain_url}: {e}. Cookies may not be set correctly.")
+
+                    for cookie_dict in self.cookies_data:
+                        # Ensure keys match Selenium's expectations, especially 'expires'
+                        selenium_cookie = {}
+                        for key, value in cookie_dict.items():
+                            if key == 'expires': # Pydantic model uses 'expires' for timestamp
+                                selenium_cookie['expiry'] = value # Selenium expects 'expiry' for timestamp
+                            elif key == 'httpOnly': # Selenium expects 'httpOnly'
+                                selenium_cookie['httpOnly'] = value
+                            elif key in ['name', 'value', 'path', 'domain', 'secure', 'sameSite']:
+                                selenium_cookie[key] = value
+                        
                         try:
                             self.driver.add_cookie(selenium_cookie)
-                        except InvalidArgumentException as iae:
-                             logger.warning(f"Could not add cookie {selenium_cookie.get('name')} due to invalid argument (often domain mismatch if cookie_domain_url wasn't visited or cookie domain is too broad, or incorrect 'expiry' format): {iae} - Cookie data: {selenium_cookie}")
+                            logger.debug(f"Cookie set: {selenium_cookie.get('name', 'unknown')}")
                         except Exception as e:
-                            logger.warning(f"Could not add cookie {selenium_cookie.get('name')}: {e} - Cookie data: {selenium_cookie}")
-                logger.info(f"Attempted to apply {len(self.cookies_data)} cookies to the browser session.")
-                if cookie_domain_url: # Only refresh if we navigated
-                    self.driver.refresh() 
-                    logger.debug("Refreshed browser session after applying cookies.")
-
-
-            return self.driver
-
-        except WebDriverException as e:
-            logger.error(f"WebDriverException during {browser_type} initialization: {e}", exc_info=True)
-            self.driver = None # Ensure driver is None on failure
-            raise
+                            logger.warning(f"Failed to set cookie {selenium_cookie.get('name', 'unknown')}: {e}")
+                
+                # Success - break out of retry loop
+                break
+                
+            except Exception as e:
+                logger.warning(f"Chrome initialization attempt {attempt + 1}/{max_retries} failed: {e}")
+                
+                # Clean up any partial driver
+                if hasattr(self, 'driver') and self.driver:
+                    try:
+                        self.driver.quit()
+                    except:
+                        pass
+                    self.driver = None
+                
+                # Force cleanup Chrome processes before retry
+                if attempt < max_retries - 1:
+                    logger.info(f"Cleaning up Chrome processes before retry {attempt + 2}...")
+                    self._force_cleanup_chrome_processes()
+                    import time
+                    time.sleep(2)  # Wait for cleanup
+                else:
+                    # Last attempt failed
+                    logger.error(f"All {max_retries} Chrome initialization attempts failed")
+                    raise WebDriverException(f"Failed to initialize Chrome after {max_retries} attempts: {e}")
+        
+        return self.driver
+    
+    def _force_cleanup_chrome_processes(self):
+        """Force cleanup Chrome processes to resolve session issues"""
+        try:
+            import subprocess
+            import platform
+            
+            if platform.system() == "Windows":
+                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
+                             capture_output=True, timeout=10)
+            else:
+                subprocess.run(["pkill", "-f", "chrome"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["pkill", "-f", "chromedriver"], 
+                             capture_output=True, timeout=10)
+            
+            logger.info("Chrome processes force cleaned")
         except Exception as e:
-            logger.error(f"An unexpected error occurred during WebDriver initialization: {e}", exc_info=True)
-            self.driver = None # Ensure driver is None on failure
-            raise
+            logger.warning(f"Chrome process cleanup failed: {e}")
 
     def close_driver(self):
         """Closes the WebDriver session if it's active."""
@@ -395,53 +434,79 @@ class BrowserManager:
             logger.error("No active WebDriver instance to navigate.")
             return False
 
-        try:
-            logger.info(f"Navigating to {url}")
-            self.driver.get(url)
-            
-            # Wait for page to load completely with shorter timeout
-            import time
-            time.sleep(3)  # Reduced from 5 to 3 seconds
-            
-            # Check if page loaded successfully
-            current_url = self.driver.current_url
-            if "about:blank" in current_url or "data:text/html" in current_url:
-                logger.warning(f"Page may not have loaded properly. Current URL: {current_url}")
-                return False
-                
-            return True
-        except TimeoutException:
-            logger.error(f"Timeout while loading page: {url}")
-            # Try to refresh the page once with shorter wait
+        # Retry logic for navigation
+        max_retries = 3
+        for attempt in range(max_retries):
             try:
-                logger.info("Attempting to refresh page after timeout...")
-                self.driver.refresh()
-                time.sleep(5)  # Reduced from 10 to 5 seconds
+                logger.info(f"Navigating to {url} (attempt {attempt + 1}/{max_retries})")
+                self.driver.get(url)
+                
+                # Wait for page to load completely with shorter timeout
+                import time
+                time.sleep(3)  # Reduced from 5 to 3 seconds
+                
+                # Check if page loaded successfully
+                current_url = self.driver.current_url
+                if "about:blank" in current_url or "data:text/html" in current_url:
+                    logger.warning(f"Page may not have loaded properly. Current URL: {current_url}")
+                    if attempt < max_retries - 1:
+                        logger.info(f"Retrying navigation to {url}...")
+                        continue
+                    else:
+                        return False
+                        
                 return True
-            except Exception as refresh_error:
-                logger.error(f"Refresh also failed: {refresh_error}")
-                # Try one more time with a different approach
-                try:
-                    logger.info("Trying to navigate again...")
-                    self.driver.get(url)
-                    time.sleep(3)
-                    return True
-                except Exception as e:
-                    logger.error(f"Second navigation attempt also failed: {e}")
+                
+            except Exception as e:
+                logger.warning(f"Navigation attempt {attempt + 1}/{max_retries} failed: {e}")
+                
+                # Check if it's a session issue
+                if "session deleted" in str(e) or "invalid session id" in str(e):
+                    logger.info("Session issue detected, reinitializing driver...")
+                    try:
+                        self.close_driver()
+                        self.get_driver()
+                    except Exception as reinit_error:
+                        logger.error(f"Failed to reinitialize driver: {reinit_error}")
+                        return False
+                
+                # Try to refresh the page once with shorter wait
+                if attempt < max_retries - 1:
+                    try:
+                        logger.info("Attempting to refresh page after navigation failure...")
+                        self.driver.refresh()
+                        time.sleep(5)  # Reduced from 10 to 5 seconds
+                        continue
+                    except Exception as refresh_error:
+                        logger.warning(f"Refresh also failed: {refresh_error}")
+                        continue
+                else:
+                    # Last attempt failed
+                    logger.error(f"All {max_retries} navigation attempts failed for {url}")
                     return False
-        except Exception as e:
-            logger.error(f"Error navigating to {url}: {e}", exc_info=True)
-            return False
+        
+        return False
 
     def is_driver_active(self) -> bool:
         """Checks if the WebDriver is still responsive."""
         if not self.driver:
             return False
         try:
-            _ = self.driver.current_url # A simple command to check responsiveness
+            # Try a simple command to check responsiveness
+            _ = self.driver.current_url
             return True
-        except WebDriverException:
-            logger.warning("WebDriver is not responsive.")
+        except Exception as e:
+            # Check for specific session issues
+            if "session deleted" in str(e) or "invalid session id" in str(e) or "tab crashed" in str(e):
+                logger.warning(f"WebDriver session issue detected: {e}")
+                # Clean up the broken driver
+                try:
+                    self.driver.quit()
+                except:
+                    pass
+                self.driver = None
+            else:
+                logger.warning(f"WebDriver is not responsive: {e}")
             return False
 
     def check_login_status(self) -> bool:
