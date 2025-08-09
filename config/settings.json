@@ -9,7 +9,7 @@
     "processed_tweets_file": "processed_tweets_log.csv",
     "cookie_file_per_account_in_accounts_json": true,
     "batch_processing": {
-      "batch_size": 25,
+      "batch_size": 10,
       "delay_between_batches_seconds": 120
     },
     "action_config": {

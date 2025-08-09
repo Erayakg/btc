@@ -469,18 +469,30 @@ class TwitterOrchestrator:
         else:
             logger.warning("Target keywords bulunamadı. Global tweet üretimi atlanıyor.")
 
-        # Hesap gruplarını oluştur - ayarlanabilir grup boyutu
+        # Sadece aktif hesapları filtrele (status: true olanlar)
+        active_accounts = [account for account in self.accounts_data if account.get('is_active', False)]
+        inactive_accounts = [account for account in self.accounts_data if not account.get('is_active', False)]
+        
+        logger.info(f"Toplam {len(self.accounts_data)} hesap bulundu:")
+        logger.info(f"  - Aktif hesaplar: {len(active_accounts)}")
+        logger.info(f"  - Pasif hesaplar: {len(inactive_accounts)}")
+        
+        if not active_accounts:
+            logger.warning("Hiç aktif hesap bulunamadı! İşlem sonlandırılıyor.")
+            return
+        
+        # Hesap gruplarını oluştur - sadece aktif hesaplar için 10'lu gruplar
         batch_settings = automation_settings.get('batch_processing', {})
-        batch_size = batch_settings.get('batch_size', 25)  # Varsayılan 25
+        batch_size = 10  # Aktif hesaplar için 10'lu gruplar
         delay_between_batches = batch_settings.get('delay_between_batches_seconds', 180)  # Varsayılan 3 dakika
         
         account_batches = []
         
-        for i in range(0, len(self.accounts_data), batch_size):
-            batch = self.accounts_data[i:i + batch_size]
+        for i in range(0, len(active_accounts), batch_size):
+            batch = active_accounts[i:i + batch_size]
             account_batches.append(batch)
         
-        logger.info(f"Toplam {len(self.accounts_data)} hesap {len(account_batches)} gruba bölündü (her grupta {batch_size} hesap)")
+        logger.info(f"Aktif {len(active_accounts)} hesap {len(account_batches)} gruba bölündü (her grupta {batch_size} hesap)")
         logger.info(f"Grup bekleme süresi: {delay_between_batches} saniye")
         
         # Her grup için sırayla işle
@@ -515,7 +527,7 @@ class TwitterOrchestrator:
                 logger.info(f"Bir sonraki grup için {delay_between_batches} saniye bekleniyor...")
                 await asyncio.sleep(delay_between_batches)
         
-        logger.info(f"Tüm gruplar tamamlandı! Toplam {total_processed}/{len(self.accounts_data)} hesap başarıyla işlendi.")
+        logger.info(f"Tüm gruplar tamamlandı! Toplam {total_processed}/{len(active_accounts)} aktif hesap başarıyla işlendi.")
 
 
 if __name__ == "__main__":
