@@ -147,6 +147,14 @@ class BrowserManager:
         else:
             logger.info("Headless mode disabled - browser will be visible")
         
+        # Unique user data directory for each browser instance to prevent conflicts
+        import uuid
+        import tempfile
+        unique_id = str(uuid.uuid4())[:8]
+        user_data_dir = tempfile.mkdtemp(prefix=f"chrome_user_data_{unique_id}_")
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        logger.info(f"Using unique user data directory: {user_data_dir}")
+        
         # Türkçe karakter desteği için encoding ayarları
         options.add_argument("--lang=tr-TR")
         options.add_argument("--accept-lang=tr-TR,tr,en-US,en")
@@ -334,13 +342,45 @@ class BrowserManager:
         """Closes the WebDriver session if it's active."""
         if self.driver:
             try:
+                # First try to quit gracefully
                 self.driver.quit()
-                logger.info("WebDriver session closed.")
+                logger.info("WebDriver session closed gracefully.")
             except Exception as e:
-                logger.error(f"Error closing WebDriver: {e}", exc_info=True)
+                logger.warning(f"Error during graceful WebDriver close: {e}")
+                try:
+                    # If graceful close fails, try to close forcefully
+                    self.driver.close()
+                    logger.info("WebDriver session closed forcefully.")
+                except Exception as e2:
+                    logger.error(f"Error during forceful WebDriver close: {e2}")
             finally:
                 self.driver = None
+                # Clean up temporary user data directories
+                self._cleanup_temp_directories()
+        else:
+            logger.debug("No WebDriver instance to close.")
     
+    def _cleanup_temp_directories(self):
+        """Clean up temporary Chrome user data directories."""
+        try:
+            import tempfile
+            import shutil
+            import glob
+            
+            # Find and remove temporary Chrome user data directories
+            temp_dir = tempfile.gettempdir()
+            chrome_dirs = glob.glob(os.path.join(temp_dir, "chrome_user_data_*"))
+            
+            for chrome_dir in chrome_dirs:
+                try:
+                    if os.path.exists(chrome_dir):
+                        shutil.rmtree(chrome_dir, ignore_errors=True)
+                        logger.debug(f"Cleaned up temporary directory: {chrome_dir}")
+                except Exception as e:
+                    logger.debug(f"Could not clean up directory {chrome_dir}: {e}")
+        except Exception as e:
+            logger.debug(f"Error during temp directory cleanup: {e}")
+
     def navigate_to(self, url: str, ensure_driver: bool = True) -> bool:
         """Navigates to a URL. Optionally ensures driver is active."""
         if ensure_driver and (not self.driver or not self.is_driver_active()):

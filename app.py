@@ -193,44 +193,89 @@ def stop_automation():
     global current_process, is_running
     
     try:
-        # Önce main.py process'ini durdur
+        # Önce main.py process'ine SIGTERM sinyali gönder (güvenli kapatma)
         if current_process and is_running:
             try:
-                current_process.terminate()
-                # 5 saniye bekle, eğer hala çalışıyorsa force kill
-                current_process.wait(timeout=5)
-            except:
-                current_process.kill()
+                logger.info("Otomasyona güvenli kapatma sinyali gönderiliyor...")
+                current_process.terminate()  # SIGTERM sinyali gönder
+                
+                # 10 saniye bekle, eğer hala çalışıyorsa force kill
+                try:
+                    current_process.wait(timeout=10)
+                    logger.info("Otomasyon güvenli şekilde kapatıldı.")
+                except subprocess.TimeoutExpired:
+                    logger.warning("Otomasyon 10 saniye içinde kapanmadı, zorla kapatılıyor...")
+                    current_process.kill()  # SIGKILL sinyali gönder
+                    current_process.wait(timeout=5)
+                    logger.info("Otomasyon zorla kapatıldı.")
+                    
+            except Exception as e:
+                logger.error(f"Process kapatma hatası: {e}")
+                # Son çare olarak force kill
+                try:
+                    current_process.kill()
+                    current_process.wait(timeout=5)
+                except:
+                    pass
         
-        # Chrome sekmelerini kapat
-        import subprocess
-        import platform
-        
-        try:
-            if platform.system() == "Windows":
-                # Windows'ta Chrome sekmelerini kapat
-                subprocess.run(['taskkill', '/f', '/im', 'chrome.exe'], 
-                             capture_output=True, timeout=10)
-                subprocess.run(['taskkill', '/f', '/im', 'chromedriver.exe'], 
-                             capture_output=True, timeout=10)
-            else:
-                # Linux/Mac'te Chrome sekmelerini kapat
-                subprocess.run(['pkill', '-f', 'chrome'], 
-                             capture_output=True, timeout=10)
-                subprocess.run(['pkill', '-f', 'chromedriver'], 
-                             capture_output=True, timeout=10)
-        except Exception as e:
-            print(f"Chrome kapatma hatası (önemli değil): {e}")
+        # Chrome process'lerini ve geçici dizinleri temizle
+        logger.info("Chrome process'leri ve geçici dizinler temizleniyor...")
+        cleanup_chrome_processes_and_dirs()
         
         is_running = False
         current_process = None
         
-        return jsonify({'success': True, 'message': 'Otomasyon durduruldu ve Chrome sekmeleri kapatıldı!'})
+        return jsonify({'success': True, 'message': 'Otomasyon durduruldu ve tüm Chrome sekmeleri kapatıldı!'})
         
     except Exception as e:
+        logger.error(f"Otomasyon durdurulurken hata: {e}")
         is_running = False
         current_process = None
         return jsonify({'success': False, 'message': f'Otomasyon durdurulurken hata: {str(e)}'})
+
+def cleanup_chrome_processes_and_dirs():
+    """Chrome process'lerini ve geçici dizinleri temizle"""
+    try:
+        import subprocess
+        import platform
+        import tempfile
+        import glob
+        import shutil
+        
+        # Chrome process'lerini kapat
+        if platform.system() == "Windows":
+            # Windows'ta Chrome process'lerini zorla kapat
+            subprocess.run(['taskkill', '/f', '/im', 'chrome.exe'], 
+                         capture_output=True, timeout=10)
+            subprocess.run(['taskkill', '/f', '/im', 'chromedriver.exe'], 
+                         capture_output=True, timeout=10)
+        else:
+            # Linux/Mac'te Chrome process'lerini zorla kapat
+            subprocess.run(['pkill', '-f', 'chrome'], 
+                         capture_output=True, timeout=10)
+            subprocess.run(['pkill', '-f', 'chromedriver'], 
+                         capture_output=True, timeout=10)
+        
+        logger.info("Chrome process'leri kapatıldı")
+        
+        # Geçici Chrome user data dizinlerini temizle
+        temp_dir = tempfile.gettempdir()
+        chrome_dirs = glob.glob(os.path.join(temp_dir, "chrome_user_data_*"))
+        
+        cleaned_dirs = 0
+        for chrome_dir in chrome_dirs:
+            try:
+                if os.path.exists(chrome_dir):
+                    shutil.rmtree(chrome_dir, ignore_errors=True)
+                    cleaned_dirs += 1
+                    logger.debug(f"Geçici dizin temizlendi: {chrome_dir}")
+            except Exception as e:
+                logger.debug(f"Dizin temizlenirken hata {chrome_dir}: {e}")
+        
+        logger.info(f"{cleaned_dirs} geçici Chrome dizini temizlendi")
+        
+    except Exception as e:
+        logger.warning(f"Chrome temizleme hatası: {e}")
 
 @app.route('/api/get-status')
 def get_status():

@@ -170,6 +170,11 @@ class TwitterOrchestrator:
     async def _process_account(self, account_dict: dict):
         """Processes tasks for a single Twitter account."""
         
+        # Shutdown kontrolü
+        if self.shutdown_event.is_set():
+            logger.info("Shutdown sinyali alındı. Hesap işlemi durduruluyor...")
+            return
+        
         # Create AccountConfig Pydantic model from the dictionary
         try:
             # A simple way to map, assuming keys in dict match model fields or are handled by default values
@@ -193,6 +198,11 @@ class TwitterOrchestrator:
         
         browser_manager = None
         try:
+            # Shutdown kontrolü
+            if self.shutdown_event.is_set():
+                logger.info("Shutdown sinyali alındı. Hesap işlemi durduruluyor...")
+                return
+                
             browser_manager = BrowserManager(account_config=account_dict) # Pass original dict for cookie path handling
             
             # Browser manager'ı listeye ekle (temizlik için)
@@ -211,6 +221,11 @@ class TwitterOrchestrator:
                 logger.info(f"[{account.account_id}] Login successful.")
             else:
                 logger.info(f"[{account.account_id}] Already logged in.")
+            
+            # Shutdown kontrolü
+            if self.shutdown_event.is_set():
+                logger.info("Shutdown sinyali alındı. Hesap işlemi durduruluyor...")
+                return
             
             llm_service = LLMService(config_loader=self.config_loader)
             
@@ -255,6 +270,11 @@ class TwitterOrchestrator:
                 selected_tweets = random.sample(self.global_tweets, min(tweets_per_account, len(self.global_tweets)))
                 
                 for i, global_tweet in enumerate(selected_tweets):
+                    # Shutdown kontrolü
+                    if self.shutdown_event.is_set():
+                        logger.info(f"[{account.account_id}] Shutdown sinyali alındı. Tweet atma durduruluyor...")
+                        break
+                        
                     if tweets_made_this_account >= tweets_per_account:
                         logger.info(f"[{account.account_id}] Tweet limiti doldu ({tweets_per_account}). Durduruluyor.")
                         break
@@ -295,6 +315,11 @@ class TwitterOrchestrator:
                 
                 # Global repost tweetleri sırayla kullan
                 for i, repost_data in enumerate(self.global_repost_tweets):
+                    # Shutdown kontrolü
+                    if self.shutdown_event.is_set():
+                        logger.info(f"[{account.account_id}] Shutdown sinyali alındı. Repost etme durduruluyor...")
+                        break
+                        
                     if tweets_made_this_account >= tweets_per_account:
                         logger.info(f"[{account.account_id}] Tweet limiti doldu ({tweets_per_account}). Durduruluyor.")
                         break
@@ -327,68 +352,86 @@ class TwitterOrchestrator:
 
             # Action 3: Like tweets
             if automation_settings and 'action_config' in automation_settings and automation_settings['action_config'].get('enable_liking_tweets'):
-                keywords_to_like = automation_settings['action_config'].get('like_tweets_from_keywords', []) or []
-                
-                # Anahtar kelimeler varsa keyword-based beğenme yap
-                if keywords_to_like:
-                    logger.info(f"[{account.account_id}] Starting to like tweets based on {len(keywords_to_like)} keywords.")
-                    likes_done_this_run = 0
-                    for keyword in keywords_to_like:
-                        max_likes = automation_settings['action_config'].get('max_likes_per_run', 5)
-                        if likes_done_this_run >= max_likes:
-                            break
-                        logger.info(f"[{account.account_id}] Searching for tweets with keyword '{keyword}' to like.")
-                        tweets_to_potentially_like = await asyncio.to_thread(
-                            scraper.scrape_tweets_by_keyword,
-                            keyword,
-                            max_tweets=max_likes * 2 # Fetch more to have options
-                        )
-                        for tweet_to_like in tweets_to_potentially_like:
+                # Shutdown kontrolü
+                if self.shutdown_event.is_set():
+                    logger.info(f"[{account.account_id}] Shutdown sinyali alındı. Like işlemi atlanıyor...")
+                else:
+                    keywords_to_like = automation_settings['action_config'].get('like_tweets_from_keywords', []) or []
+                    
+                    # Anahtar kelimeler varsa keyword-based beğenme yap
+                    if keywords_to_like:
+                        logger.info(f"[{account.account_id}] Starting to like tweets based on {len(keywords_to_like)} keywords.")
+                        likes_done_this_run = 0
+                        for keyword in keywords_to_like:
+                            # Shutdown kontrolü
+                            if self.shutdown_event.is_set():
+                                logger.info(f"[{account.account_id}] Shutdown sinyali alındı. Like işlemi durduruluyor...")
+                                break
+                                
+                            max_likes = automation_settings['action_config'].get('max_likes_per_run', 5)
                             if likes_done_this_run >= max_likes:
                                 break
-                            
-                            # Anahtar kelime kontrolü - tweet'te gerçekten var mı?
-                            tweet_text_lower = tweet_to_like.text_content.lower() if tweet_to_like.text_content else ""
-                            keyword_lower = keyword.lower()
-                            
-                            # Hashtag kontrolü
-                            if keyword.startswith('#'):
-                                # Hashtag için özel kontrol
-                                hashtag_without_hash = keyword[1:].lower()
-                                if f"#{hashtag_without_hash}" in tweet_text_lower or f"#{hashtag_without_hash}" in tweet_text_lower:
-                                    should_like = True
+                            logger.info(f"[{account.account_id}] Searching for tweets with keyword '{keyword}' to like.")
+                            tweets_to_potentially_like = await asyncio.to_thread(
+                                scraper.scrape_tweets_by_keyword,
+                                keyword,
+                                max_tweets=max_likes * 2 # Fetch more to have options
+                            )
+                            for tweet_to_like in tweets_to_potentially_like:
+                                # Shutdown kontrolü
+                                if self.shutdown_event.is_set():
+                                    logger.info(f"[{account.account_id}] Shutdown sinyali alındı. Like işlemi durduruluyor...")
+                                    break
+                                    
+                                if likes_done_this_run >= max_likes:
+                                    break
+                                
+                                # Anahtar kelime kontrolü - tweet'te gerçekten var mı?
+                                tweet_text_lower = tweet_to_like.text_content.lower() if tweet_to_like.text_content else ""
+                                keyword_lower = keyword.lower()
+                                
+                                # Hashtag kontrolü
+                                if keyword.startswith('#'):
+                                    # Hashtag için özel kontrol
+                                    hashtag_without_hash = keyword[1:].lower()
+                                    if f"#{hashtag_without_hash}" in tweet_text_lower or f"#{hashtag_without_hash}" in tweet_text_lower:
+                                        should_like = True
+                                    else:
+                                        should_like = False
                                 else:
-                                    should_like = False
-                            else:
-                                # Normal keyword kontrolü
-                                should_like = keyword_lower in tweet_text_lower
-                            
-                            if not should_like:
-                                logger.debug(f"[{account.account_id}] Tweet doesn't contain keyword '{keyword}': {tweet_text_lower[:50]}...")
-                                continue
-                            
-                            action_key = f"like_{account.account_id}_{tweet_to_like.tweet_id}"
-                            if action_key in self.processed_action_keys:
-                                logger.info(f"[{account.account_id}] Already liked or processed tweet {tweet_to_like.tweet_id}. Skipping.")
-                                continue
-                            
-                            avoid_own_tweets = automation_settings['action_config'].get('avoid_replying_to_own_tweets', False)
-                            if avoid_own_tweets and tweet_to_like.user_handle and account.account_id.lower() in tweet_to_like.user_handle.lower():
-                                logger.info(f"[{account.account_id}] Skipping own tweet {tweet_to_like.tweet_id} for liking.")
-                                continue
+                                    # Normal keyword kontrolü
+                                    should_like = keyword_lower in tweet_text_lower
+                                
+                                if not should_like:
+                                    logger.debug(f"[{account.account_id}] Tweet doesn't contain keyword '{keyword}': {tweet_text_lower[:50]}...")
+                                    continue
+                                
+                                action_key = f"like_{account.account_id}_{tweet_to_like.tweet_id}"
+                                if action_key in self.processed_action_keys:
+                                    logger.info(f"[{account.account_id}] Already liked or processed tweet {tweet_to_like.tweet_id}. Skipping.")
+                                    continue
+                                
+                                avoid_own_tweets = automation_settings['action_config'].get('avoid_replying_to_own_tweets', False)
+                                if avoid_own_tweets and tweet_to_like.user_handle and account.account_id.lower() in tweet_to_like.user_handle.lower():
+                                    logger.info(f"[{account.account_id}] Skipping own tweet {tweet_to_like.tweet_id} for liking.")
+                                    continue
 
-                            logger.info(f"[{account.account_id}] Attempting to like tweet {tweet_to_like.tweet_id} with keyword '{keyword}': {tweet_text_lower[:50]}...")
-                            like_success = await engagement.like_tweet(tweet_id=tweet_to_like.tweet_id, tweet_url=str(tweet_to_like.tweet_url) if tweet_to_like.tweet_url else None)
+                                logger.info(f"[{account.account_id}] Attempting to like tweet {tweet_to_like.tweet_id} with keyword '{keyword}': {tweet_text_lower[:50]}...")
+                                like_success = await engagement.like_tweet(tweet_id=tweet_to_like.tweet_id, tweet_url=str(tweet_to_like.tweet_url) if tweet_to_like.tweet_url else None)
+                                
+                                if like_success:
+                                    self.file_handler.save_processed_action_key(action_key, timestamp=datetime.now().isoformat())
+                                    self.processed_action_keys.add(action_key)
+                                    likes_done_this_run += 1
+                                    await asyncio.sleep(random.uniform(1, 2))  # Çok kısa bekleme
+                                else:
+                                    logger.warning(f"[{account.account_id}] Failed to like tweet {tweet_to_like.tweet_id}.")
                             
-                            if like_success:
-                                self.file_handler.save_processed_action_key(action_key, timestamp=datetime.now().isoformat())
-                                self.processed_action_keys.add(action_key)
-                                likes_done_this_run += 1
-                                await asyncio.sleep(random.uniform(1, 2))  # Çok kısa bekleme
-                            else:
-                                logger.warning(f"[{account.account_id}] Failed to like tweet {tweet_to_like.tweet_id}.")
-                else:
-                    logger.info(f"[{account.account_id}] Liking enabled but no keywords configured. Skipping like operations.")
+                            # Shutdown kontrolü - keyword döngüsünden çık
+                            if self.shutdown_event.is_set():
+                                break
+                    else:
+                        logger.info(f"[{account.account_id}] Liking enabled but no keywords configured. Skipping like operations.")
             
             logger.info(f"[{account.account_id}] Finished processing tasks for this account. Total tweets made: {tweets_made_this_account}")
 
@@ -414,8 +457,35 @@ class TwitterOrchestrator:
             # If a delay *between starts* is needed, a different mechanism (e.g., semaphore with delays) is required.
             await asyncio.sleep(self.global_settings.get('delay_between_accounts_seconds', 10)) # Reduced default for concurrent example
 
+    def force_cleanup_chrome_processes(self):
+        """Chrome process'lerini zorla temizler ve temiz bir başlangıç sağlar"""
+        logger.info("Chrome process'leri zorla temizleniyor...")
+        try:
+            import subprocess
+            import platform
+            
+            if platform.system() == "Windows":
+                # Windows'ta Chrome process'lerini zorla kapat
+                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
+                             capture_output=True, timeout=10)
+            else:
+                # Linux'ta Chrome process'lerini zorla kapat
+                subprocess.run(["pkill", "-f", "chrome"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["pkill", "-f", "chromedriver"], 
+                             capture_output=True, timeout=10)
+            
+            logger.info("Chrome process'leri zorla temizlendi")
+        except Exception as e:
+            logger.warning(f"Chrome process'leri temizlenirken hata: {e}")
+
     async def run(self):
         logger.info("Twitter Orchestrator starting...")
+        
+        # Chrome process'lerini zorla temizle (temiz başlangıç için)
+        self.force_cleanup_chrome_processes()
         
         # Çalıştırma öncesi temizlik
         try:
@@ -526,6 +596,11 @@ class TwitterOrchestrator:
         # Her grup için sırayla işle
         total_processed = 0
         for batch_index, account_batch in enumerate(account_batches, 1):
+            # Shutdown kontrolü
+            if self.shutdown_event.is_set():
+                logger.info("Shutdown sinyali alındı. Otomasyon durduruluyor...")
+                break
+                
             logger.info(f"=== GRUP {batch_index}/{len(account_batches)} İŞLENİYOR ({len(account_batch)} hesap) ===")
             
             # Bu grup için concurrent processing
@@ -553,7 +628,16 @@ class TwitterOrchestrator:
             # Son grup değilse, bir sonraki grup için bekle
             if batch_index < len(account_batches):
                 logger.info(f"Bir sonraki grup için {delay_between_batches} saniye bekleniyor...")
-                await asyncio.sleep(delay_between_batches)
+                # Bekleme sırasında da shutdown kontrolü yap
+                for _ in range(delay_between_batches):
+                    if self.shutdown_event.is_set():
+                        logger.info("Shutdown sinyali alındı. Bekleme durduruluyor...")
+                        break
+                    await asyncio.sleep(1)
+                
+                if self.shutdown_event.is_set():
+                    logger.info("Shutdown sinyali alındı. Otomasyon durduruluyor...")
+                    break
         
         logger.info(f"Tüm gruplar tamamlandı! Toplam {total_processed}/{len(active_accounts)} aktif hesap başarıyla işlendi.")
         
@@ -567,19 +651,80 @@ class TwitterOrchestrator:
     def cleanup_all_browsers(self):
         """Tüm açık browser'ları kapat"""
         logger.info("Tüm browser'lar kapatılıyor...")
-        for browser_manager in self.browser_managers[:]:  # Copy list to avoid modification during iteration
+        closed_count = 0
+        
+        # Copy list to avoid modification during iteration
+        browser_managers_to_close = self.browser_managers[:]
+        
+        for browser_manager in browser_managers_to_close:
             try:
-                browser_manager.close_driver()
+                if browser_manager and hasattr(browser_manager, 'close_driver'):
+                    browser_manager.close_driver()
+                    closed_count += 1
+                    logger.info(f"Browser manager kapatıldı: {browser_manager}")
                 self.browser_managers.remove(browser_manager)
             except Exception as e:
                 logger.warning(f"Browser kapatılırken hata: {e}")
-        logger.info("Tüm browser'lar kapatıldı.")
+        
+        # Force cleanup any remaining Chrome processes
+        try:
+            import subprocess
+            import platform
+            
+            if platform.system() == "Windows":
+                # Windows'ta Chrome process'lerini zorla kapat
+                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
+                             capture_output=True, timeout=10)
+            else:
+                # Linux'ta Chrome process'lerini zorla kapat
+                subprocess.run(["pkill", "-f", "chrome"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["pkill", "-f", "chromedriver"], 
+                             capture_output=True, timeout=10)
+            
+            logger.info("Chrome process'leri zorla kapatıldı")
+        except Exception as e:
+            logger.warning(f"Chrome process'leri kapatılırken hata: {e}")
+        
+        logger.info(f"Tüm browser'lar kapatıldı. Toplam {closed_count} browser kapatıldı.")
     
     def signal_handler(self, signum, frame):
         """Signal handler for graceful shutdown"""
         logger.info(f"Signal {signum} alındı. Güvenli kapatma başlatılıyor...")
         self.shutdown_event.set()
+        
+        # Immediately cleanup all browsers
+        logger.info("Tüm browser'lar kapatılıyor...")
         self.cleanup_all_browsers()
+        
+        # Force cleanup any remaining Chrome processes
+        try:
+            import subprocess
+            import platform
+            
+            if platform.system() == "Windows":
+                # Windows'ta Chrome process'lerini zorla kapat
+                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
+                             capture_output=True, timeout=10)
+            else:
+                # Linux'ta Chrome process'lerini zorla kapat
+                subprocess.run(["pkill", "-f", "chrome"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["pkill", "-f", "chromedriver"], 
+                             capture_output=True, timeout=10)
+            
+            logger.info("Chrome process'leri zorla kapatıldı")
+        except Exception as e:
+            logger.warning(f"Chrome process'leri kapatılırken hata: {e}")
+        
+        # Force exit after cleanup
+        import sys
+        logger.info("Otomasyon güvenli şekilde kapatıldı.")
+        sys.exit(0)
 
 
 if __name__ == "__main__":
@@ -597,6 +742,7 @@ if __name__ == "__main__":
         logger.critical(f"Orchestrator failed with critical error: {e}", exc_info=True)
     finally:
         # Tüm browser'ları kapat
+        logger.info("Final cleanup başlatılıyor...")
         orchestrator.cleanup_all_browsers()
         
         # Son temizlik

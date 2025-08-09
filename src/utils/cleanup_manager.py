@@ -5,7 +5,10 @@ Otomatik temizlik yöneticisi - proje çalışırken disk alanını korur
 
 import os
 import shutil
+import tempfile
 import glob
+import subprocess
+import platform
 import logging
 from pathlib import Path
 from typing import List, Tuple
@@ -37,16 +40,31 @@ class CleanupManager:
             "test_*.py",
             "*_test.py",
         ]
+        self.temp_directories = []
     
     def cleanup_before_run(self) -> int:
-        """Proje çalıştırılmadan önce temizlik yapar"""
-        logger.info("🧹 Çalıştırma öncesi temizlik başlatılıyor...")
-        return self._perform_cleanup("before_run")
+        """Çalıştırma öncesi temizlik yapar ve kazanılan alanı döner (byte cinsinden)"""
+        logger.info("Çalıştırma öncesi temizlik başlatılıyor...")
+        freed_space = 0
+        
+        # Chrome process'lerini ve temporary dizinleri temizle
+        freed_space += self._cleanup_chrome_processes()
+        freed_space += self._cleanup_temp_directories()
+        
+        logger.info(f"Çalıştırma öncesi temizlik tamamlandı. Toplam kazanılan alan: {freed_space/1024/1024:.2f} MB")
+        return freed_space
     
     def cleanup_after_run(self) -> int:
-        """Proje çalıştırıldıktan sonra temizlik yapar"""
-        logger.info("🧹 Çalıştırma sonrası temizlik başlatılıyor...")
-        return self._perform_cleanup("after_run")
+        """Çalıştırma sonrası temizlik yapar ve kazanılan alanı döner (byte cinsinden)"""
+        logger.info("Çalıştırma sonrası temizlik başlatılıyor...")
+        freed_space = 0
+        
+        # Chrome process'lerini ve temporary dizinleri temizle
+        freed_space += self._cleanup_chrome_processes()
+        freed_space += self._cleanup_temp_directories()
+        
+        logger.info(f"Çalıştırma sonrası temizlik tamamlandı. Toplam kazanılan alan: {freed_space/1024/1024:.2f} MB")
+        return freed_space
     
     def cleanup_logs(self, max_size_mb: int = 1) -> int:
         """Log dosyalarını temizler"""
@@ -66,6 +84,69 @@ class CleanupManager:
                 logger.warning(f"❌ Log temizlenemedi: {log_file} - {e}")
         
         return int(freed_space * 1024 * 1024)  # Byte cinsinden döndür
+    
+    def _cleanup_chrome_processes(self) -> int:
+        """Chrome process'lerini temizler"""
+        try:
+            if platform.system() == "Windows":
+                # Windows'ta Chrome process'lerini zorla kapat
+                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
+                             capture_output=True, timeout=10)
+            else:
+                # Linux'ta Chrome process'lerini zorla kapat
+                subprocess.run(["pkill", "-f", "chrome"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["pkill", "-f", "chromedriver"], 
+                             capture_output=True, timeout=10)
+            
+            logger.info("Chrome process'leri temizlendi")
+            return 0  # Process cleanup doesn't free disk space
+        except Exception as e:
+            logger.warning(f"Chrome process'leri temizlenirken hata: {e}")
+            return 0
+    
+    def _cleanup_temp_directories(self) -> int:
+        """Temporary dizinleri temizler ve kazanılan alanı döner"""
+        freed_space = 0
+        
+        try:
+            # Find and remove temporary Chrome user data directories
+            temp_dir = tempfile.gettempdir()
+            chrome_dirs = glob.glob(os.path.join(temp_dir, "chrome_user_data_*"))
+            
+            for chrome_dir in chrome_dirs:
+                try:
+                    if os.path.exists(chrome_dir):
+                        # Calculate directory size before removal
+                        dir_size = self._get_directory_size(chrome_dir)
+                        shutil.rmtree(chrome_dir, ignore_errors=True)
+                        freed_space += dir_size
+                        logger.debug(f"Temporary dizin temizlendi: {chrome_dir} ({dir_size/1024/1024:.2f} MB)")
+                except Exception as e:
+                    logger.debug(f"Dizin temizlenirken hata {chrome_dir}: {e}")
+            
+            logger.info(f"Temporary dizinler temizlendi. Kazanılan alan: {freed_space/1024/1024:.2f} MB")
+        except Exception as e:
+            logger.warning(f"Temporary dizinler temizlenirken hata: {e}")
+        
+        return freed_space
+    
+    def _get_directory_size(self, path: str) -> int:
+        """Dizinin boyutunu hesaplar (byte cinsinden)"""
+        total_size = 0
+        try:
+            for dirpath, dirnames, filenames in os.walk(path):
+                for filename in filenames:
+                    filepath = os.path.join(dirpath, filename)
+                    try:
+                        total_size += os.path.getsize(filepath)
+                    except (OSError, FileNotFoundError):
+                        pass
+        except Exception:
+            pass
+        return total_size
     
     def _perform_cleanup(self, stage: str) -> int:
         """Temizlik işlemini gerçekleştirir"""

@@ -101,6 +101,27 @@ python src/main.py
 - Cookie dosyalarınızı paylaşmayın
 - Rate limit'lere dikkat edin
 
+## Sorun Giderme
+
+### Chrome Process Hatası
+
+Eğer otomasyonu durdurup tekrar başlattığınızda "user data directory is already in use" hatası alıyorsanız:
+
+1. **Otomatik Temizlik**: Otomasyon artık başlangıçta ve bitişte otomatik olarak Chrome process'lerini temizler.
+
+2. **Manuel Temizlik**: Eğer hala sorun yaşıyorsanız, manuel temizlik script'ini çalıştırın:
+```bash
+python cleanup_chrome.py
+```
+
+3. **Güvenli Durdurma**: Otomasyonu durdurmak için `Ctrl+C` kullanın. Bu, tüm Chrome process'lerini güvenli bir şekilde kapatacaktır.
+
+### Diğer Sorunlar
+
+- **Login Hatası**: Cookie dosyalarınızın güncel olduğundan emin olun
+- **API Hatası**: API anahtarlarınızın doğru olduğunu kontrol edin
+- **Browser Hatası**: Chrome/ChromeDriver versiyonlarının uyumlu olduğunu kontrol edin
+
 ## Katkıda Bulunma
 
 1. Bu repository'yi fork edin
