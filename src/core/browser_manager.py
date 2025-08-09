@@ -150,15 +150,7 @@ class BrowserManager:
         # Unique user data directory for each browser instance to prevent conflicts
         import uuid
         import tempfile
-        import time
-        
-        # Basit ama etkili benzersizlik
-        unique_id = str(uuid.uuid4())[:12]
-        timestamp = int(time.time() * 1000) % 1000000  # Milisaniye cinsinden timestamp
-        user_data_dir = tempfile.mkdtemp(prefix=f"chrome_user_data_{unique_id}_{timestamp}_")
-        options.add_argument(f"--user-data-dir={user_data_dir}")
-        logger.info(f"Using unique user data directory: {user_data_dir}")
-        
+
         # Türkçe karakter desteği için encoding ayarları
         options.add_argument("--lang=tr-TR")
         options.add_argument("--accept-lang=tr-TR,tr,en-US,en")
@@ -179,39 +171,10 @@ class BrowserManager:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
         
-        # Çoklu instance çakışmalarını önlemek için ek ayarlar
-        options.add_argument("--no-first-run")
-        options.add_argument("--no-default-browser-check")
-        options.add_argument("--disable-default-apps")
-        options.add_argument("--disable-popup-blocking")
-        options.add_argument("--disable-notifications")
-        options.add_argument("--disable-background-networking")
-        options.add_argument("--disable-background-timer-throttling")
-        options.add_argument("--disable-client-side-phishing-detection")
-        options.add_argument("--disable-component-update")
-        options.add_argument("--disable-sync")
-        options.add_argument("--disable-translate")
-        options.add_argument("--disable-web-security")
-        options.add_argument("--allow-running-insecure-content")
-        options.add_argument("--disable-features=VizDisplayCompositor")
-        options.add_argument("--force-color-profile=srgb")
-        options.add_argument("--disable-backgrounding-occluded-windows")
-        options.add_argument("--disable-renderer-backgrounding")
-        options.add_argument("--disable-ipc-flooding-protection")
-        options.add_argument("--disable-hang-monitor")
-        options.add_argument("--disable-prompt-on-repost")
-        options.add_argument("--disable-domain-reliability")
-        options.add_argument("--disable-component-extensions-with-background-pages")
-        
 
         
 
         
-
-        
-
-        
-        # Türkçe karakter desteği için JavaScript'i açık tut
         # options.add_argument("--disable-javascript")  # Bu satırı kaldırdık
         
         # Diğer ayarlar
@@ -220,9 +183,6 @@ class BrowserManager:
         options.add_argument("--disable-images")  # Hızlı yükleme için
         
 
-        
-
-        
         window_size = self.browser_settings.get('window_size', '1920,1080') # Default window size
         options.add_argument(f"--window-size={window_size}")
 
@@ -298,14 +258,14 @@ class BrowserManager:
                             logger.info("Local chromedriver not found, using WebDriver Manager")
                             service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
                     
-                    # Chrome başlatmadan önce daha uzun bekleme
+                    # Chrome başlatmadan önce kısa bekleme
                     import time
-                    time.sleep(3)  # 3 saniye bekle
+                    time.sleep(1)  # 1 saniye bekle
                     
                     self.driver = webdriver.Chrome(service=service, options=options)
                     
-                    # Chrome başlatıldıktan sonra daha uzun bekleme
-                    time.sleep(5)  # 5 saniye bekle
+                    # Chrome başlatıldıktan sonra kısa bekleme
+                    time.sleep(2)  # 2 saniye bekle
                     
                     # JavaScript ile bot tespitini önle
                     self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -377,8 +337,8 @@ class BrowserManager:
                     logger.info(f"Cleaning up Chrome processes before retry {attempt + 2}...")
                     self._force_cleanup_chrome_processes()
                     import time
-                    # Daha uzun bekleme süresi
-                    wait_time = 10  # Sabit 10 saniye bekle
+                    # Kısa bekleme süresi
+                    wait_time = 3  # 3 saniye bekle
                     logger.info(f"Waiting {wait_time} seconds before retry...")
                     time.sleep(wait_time)
                 else:
@@ -393,23 +353,20 @@ class BrowserManager:
         try:
             import subprocess
             import platform
-            import time
             
             if platform.system() == "Windows":
                 # Windows'ta basit temizlik
                 subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=5)
                 subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=5)
             else:
                 # Linux'ta basit temizlik
                 subprocess.run(["pkill", "-f", "chrome"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=5)
                 subprocess.run(["pkill", "-f", "chromedriver"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=5)
             
-            # Temizlik sonrası bekleme
-            time.sleep(3)
             logger.info("Chrome processes force cleaned")
         except Exception as e:
             logger.warning(f"Chrome process cleanup failed: {e}")
