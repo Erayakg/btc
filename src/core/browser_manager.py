@@ -150,8 +150,17 @@ class BrowserManager:
         # Unique user data directory for each browser instance to prevent conflicts
         import uuid
         import tempfile
-        unique_id = str(uuid.uuid4())[:8]
-        user_data_dir = tempfile.mkdtemp(prefix=f"chrome_user_data_{unique_id}_")
+        import os
+        import threading
+        
+        # Daha güçlü benzersizlik için UUID'nin tamamını kullan + process ID + thread ID
+        unique_id = str(uuid.uuid4())
+        process_id = os.getpid()
+        thread_id = threading.get_ident()
+        unique_suffix = f"{unique_id}_{process_id}_{thread_id}"
+        
+        # Thread-safe directory oluşturma
+        user_data_dir = tempfile.mkdtemp(prefix=f"chrome_user_data_{unique_suffix}_")
         options.add_argument(f"--user-data-dir={user_data_dir}")
         logger.info(f"Using unique user data directory: {user_data_dir}")
         
@@ -231,7 +240,7 @@ class BrowserManager:
         # Determine driver manager path
         driver_manager_install_path = str(self.wdm_cache_path)
 
-        # Retry logic for Chrome initialization
+                        # Retry logic for Chrome initialization
         max_retries = 3
         for attempt in range(max_retries):
             try:
@@ -276,7 +285,14 @@ class BrowserManager:
                             logger.info("Local chromedriver not found, using WebDriver Manager")
                             service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
                     
+                    # Chrome başlatmadan önce kısa bekleme
+                    import time
+                    time.sleep(1)
+                    
                     self.driver = webdriver.Chrome(service=service, options=options)
+                    
+                    # Chrome başlatıldıktan sonra kısa bekleme
+                    time.sleep(2)
                     
                     # JavaScript ile bot tespitini önle
                     self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -348,7 +364,10 @@ class BrowserManager:
                     logger.info(f"Cleaning up Chrome processes before retry {attempt + 2}...")
                     self._force_cleanup_chrome_processes()
                     import time
-                    time.sleep(2)  # Wait for cleanup
+                    # Daha uzun bekleme süresi - her retry'da artan süre
+                    wait_time = (attempt + 1) * 3  # 3, 6, 9 saniye
+                    logger.info(f"Waiting {wait_time} seconds before retry...")
+                    time.sleep(wait_time)
                 else:
                     # Last attempt failed
                     logger.error(f"All {max_retries} Chrome initialization attempts failed")
@@ -361,18 +380,39 @@ class BrowserManager:
         try:
             import subprocess
             import platform
+            import time
             
             if platform.system() == "Windows":
+                # Windows'ta daha agresif temizlik
                 subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=15)
                 subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=15)
+                # Chrome'un tüm alt process'lerini de temizle
+                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
+                             capture_output=True, timeout=15)
             else:
+                # Linux'ta daha kapsamlı temizlik
+                # Önce normal temizlik
                 subprocess.run(["pkill", "-f", "chrome"], 
-                             capture_output=True, timeout=10)
+                             capture_output=True, timeout=15)
                 subprocess.run(["pkill", "-f", "chromedriver"], 
+                             capture_output=True, timeout=15)
+                
+                # Sonra daha agresif temizlik
+                subprocess.run(["pkill", "-9", "-f", "chrome"], 
+                             capture_output=True, timeout=15)
+                subprocess.run(["pkill", "-9", "-f", "chromedriver"], 
+                             capture_output=True, timeout=15)
+                
+                # Chrome'un tüm port'larını temizle
+                subprocess.run(["fuser", "-k", "9222/tcp"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["fuser", "-k", "9223/tcp"], 
                              capture_output=True, timeout=10)
             
+            # Temizlik sonrası kısa bekleme
+            time.sleep(2)
             logger.info("Chrome processes force cleaned")
         except Exception as e:
             logger.warning(f"Chrome process cleanup failed: {e}")
@@ -405,6 +445,7 @@ class BrowserManager:
             import tempfile
             import shutil
             import glob
+            import time
             
             # Find and remove temporary Chrome user data directories
             temp_dir = tempfile.gettempdir()
@@ -413,6 +454,17 @@ class BrowserManager:
             for chrome_dir in chrome_dirs:
                 try:
                     if os.path.exists(chrome_dir):
+                        # Önce dizinin kullanımda olup olmadığını kontrol et
+                        try:
+                            # Dizini yeniden adlandırmayı dene (kullanımda değilse başarılı olur)
+                            test_rename = chrome_dir + "_test"
+                            os.rename(chrome_dir, test_rename)
+                            os.rename(test_rename, chrome_dir)
+                        except OSError:
+                            # Dizin kullanımda, bekle ve tekrar dene
+                            time.sleep(1)
+                        
+                        # Şimdi silmeyi dene
                         shutil.rmtree(chrome_dir, ignore_errors=True)
                         logger.debug(f"Cleaned up temporary directory: {chrome_dir}")
                 except Exception as e:
