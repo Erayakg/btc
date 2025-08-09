@@ -110,7 +110,7 @@ class LLMService:
                 logger.info(f"Generating text with Gemini")
                 
                 # Add Turkish instruction to keep responses direct with UTF-8 support
-                turkish_prompt = f"{prompt}\n\nLütfen sadece tweet'i yaz, başka açıklama yapma. Direkt cevap ver. Türkçe karakterleri doğru kullan."
+                turkish_prompt = f"{prompt}\n\nLütfen sadece tweet'i yaz, başka açıklama yapma. Direkt cevap ver. Türkçe karakterleri doğru kullan. EMOJİ KULLANMA, sadece normal harfler ve noktalama işaretleri kullan."
                 
                 # Limit tokens for Gemini to keep tweets short
                 max_tokens = call_params.get('max_tokens', 50)  # Default to 50 for Gemini

@@ -268,7 +268,19 @@ class TweetPublisher:
                 
                 # Method 1: Direct send_keys with UTF-8 support
                 logger.info("Starting UTF-8 character typing...")
+                
+                # Emoji ve özel karakterleri filtrele
+                filtered_text = ""
                 for char in tweet_text:
+                    # Sadece BMP karakterlerini kabul et (emoji'ler BMP dışında)
+                    if ord(char) < 0x10000:
+                        filtered_text += char
+                    else:
+                        logger.warning(f"Emoji karakteri filtrelendi: {char}")
+                
+                logger.info(f"Filtrelenmiş metin: {filtered_text[:50]}...")
+                
+                for char in filtered_text:
                     try:
                         text_area.send_keys(char)
                         # Random delay between characters (0.05-0.15 seconds)
@@ -331,7 +343,7 @@ class TweetPublisher:
                                 bubbles: true 
                             }));
                         }
-                    """, text_area, tweet_text)
+                    """, text_area, filtered_text)
                     logger.info("Set text via JavaScript with UTF-8 support.")
                 except Exception as e:
                     logger.warning(f"JavaScript method failed: {e}")
@@ -342,7 +354,7 @@ class TweetPublisher:
                             var text = arguments[1];
                             textarea.innerHTML = text;
                             textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                        """, text_area, tweet_text)
+                        """, text_area, filtered_text)
                         logger.info("Set text via simple JavaScript fallback.")
                     except Exception as fallback_e:
                         logger.error(f"JavaScript fallback also failed: {fallback_e}")
@@ -369,7 +381,7 @@ class TweetPublisher:
                         textarea.dispatchEvent(new KeyboardEvent('keydown', { key: text[i] }));
                         textarea.dispatchEvent(new KeyboardEvent('keyup', { key: text[i] }));
                     }
-                """, text_area, tweet_text)
+                """, text_area, filtered_text)
                 logger.info("Triggered input events to activate button.")
                 
                 # Method 3: Add a character and then remove it to force button activation
@@ -801,7 +813,18 @@ class TweetPublisher:
             logger.info(f"Reply text: {reply_text[:50]}...")
             
             # Method 1: Direct send_keys with UTF-8 support
+            # Emoji ve özel karakterleri filtrele
+            filtered_reply_text = ""
             for char in reply_text:
+                # Sadece BMP karakterlerini kabul et (emoji'ler BMP dışında)
+                if ord(char) < 0x10000:
+                    filtered_reply_text += char
+                else:
+                    logger.warning(f"Reply'de emoji karakteri filtrelendi: {char}")
+            
+            logger.info(f"Filtrelenmiş reply metni: {filtered_reply_text[:50]}...")
+            
+            for char in filtered_reply_text:
                 reply_text_area.send_keys(char)
                 time.sleep(random.uniform(0.05, 0.15))
             
@@ -819,7 +842,7 @@ class TweetPublisher:
                 textarea.dispatchEvent(new Event('change', { bubbles: true }));
                 textarea.dispatchEvent(new Event('keyup', { bubbles: true }));
                 textarea.dispatchEvent(new Event('keydown', { bubbles: true }));
-            """, reply_text_area, reply_text)
+            """, reply_text_area, filtered_reply_text)
             
             logger.info("Typed reply text into textarea with UTF-8 support.")
 
@@ -1022,7 +1045,18 @@ class TweetPublisher:
                 time.sleep(random.uniform(0.5, 1.0))
                 
                 # Method 1: Direct send_keys with UTF-8 support
+                # Emoji ve özel karakterleri filtrele
+                filtered_quote_text = ""
                 for char in final_quote_text:
+                    # Sadece BMP karakterlerini kabul et (emoji'ler BMP dışında)
+                    if ord(char) < 0x10000:
+                        filtered_quote_text += char
+                    else:
+                        logger.warning(f"Quote tweet'te emoji karakteri filtrelendi: {char}")
+                
+                logger.info(f"Filtrelenmiş quote tweet metni: {filtered_quote_text[:50]}...")
+                
+                for char in filtered_quote_text:
                     quote_text_area.send_keys(char)
                     time.sleep(random.uniform(0.05, 0.15))
                     
@@ -1046,7 +1080,7 @@ class TweetPublisher:
                     textarea.dispatchEvent(new Event('change', { bubbles: true }));
                     textarea.dispatchEvent(new Event('keyup', { bubbles: true }));
                     textarea.dispatchEvent(new Event('keydown', { bubbles: true }));
-                """, quote_text_area, final_quote_text)
+                """, quote_text_area, filtered_quote_text)
                 
                 logger.info("Finished human-like typing for quote tweet with UTF-8 support.")
                 logger.info("Typed quote text.")
