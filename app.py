@@ -192,21 +192,45 @@ def stop_automation():
     """Otomasyonu durdur"""
     global current_process, is_running
     
-    if current_process and is_running:
+    try:
+        # Önce main.py process'ini durdur
+        if current_process and is_running:
+            try:
+                current_process.terminate()
+                # 5 saniye bekle, eğer hala çalışıyorsa force kill
+                current_process.wait(timeout=5)
+            except:
+                current_process.kill()
+        
+        # Chrome sekmelerini kapat
+        import subprocess
+        import platform
+        
         try:
-            current_process.terminate()
-            # 5 saniye bekle, eğer hala çalışıyorsa force kill
-            current_process.wait(timeout=5)
-        except:
-            current_process.kill()
+            if platform.system() == "Windows":
+                # Windows'ta Chrome sekmelerini kapat
+                subprocess.run(['taskkill', '/f', '/im', 'chrome.exe'], 
+                             capture_output=True, timeout=10)
+                subprocess.run(['taskkill', '/f', '/im', 'chromedriver.exe'], 
+                             capture_output=True, timeout=10)
+            else:
+                # Linux/Mac'te Chrome sekmelerini kapat
+                subprocess.run(['pkill', '-f', 'chrome'], 
+                             capture_output=True, timeout=10)
+                subprocess.run(['pkill', '-f', 'chromedriver'], 
+                             capture_output=True, timeout=10)
+        except Exception as e:
+            print(f"Chrome kapatma hatası (önemli değil): {e}")
         
         is_running = False
         current_process = None
-        return jsonify({'success': True, 'message': 'Otomasyon durduruldu!'})
-    else:
+        
+        return jsonify({'success': True, 'message': 'Otomasyon durduruldu ve Chrome sekmeleri kapatıldı!'})
+        
+    except Exception as e:
         is_running = False
         current_process = None
-        return jsonify({'success': True, 'message': 'Otomasyon zaten durmuştu!'})
+        return jsonify({'success': False, 'message': f'Otomasyon durdurulurken hata: {str(e)}'})
 
 @app.route('/api/get-status')
 def get_status():

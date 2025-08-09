@@ -13,19 +13,21 @@
       "delay_between_batches_seconds": 120
     },
     "action_config": {
-      "enable_liking_tweets": false,
+      "enable_liking_tweets": true,
       "max_likes_per_run": 5,
       "like_tweets_from_keywords": [
         "eğitim",
         "öğrenme",
         "yapay zeka"
       ],
-      "enable_keyword_reposts": false,
+      "enable_keyword_reposts": true,
       "max_reposts_per_keyword": 2,
       "target_keywords": [
-        "DersMaster"
+        "DersMaster",
+        "Eğitimde Yapay Zeka",
+        "özel ders"
       ],
-      "user_handle": "@DersMaster",
+      "user_handle": "",
       "llm_settings_for_post": {
         "service_preference": "gemini",
         "model_name_override": "gemini-1.5-flash",
@@ -45,11 +47,11 @@
     "file_handler": {
       "enabled": true,
       "path": "logs/app.log",
-      "level": "DEBUG",
-      "format": "%(asctime)s [%(levelname)-8s] %(name)s (%(module)s.%(funcName)s:%(lineno)d): %(message)s",
+      "level": "INFO",
+      "format": "%(asctime)s [%(levelname)-8s] %(name)s: %(message)s",
       "rotation_type": "size",
-      "max_bytes": 1024000,
-      "backup_count": 5
+      "max_bytes": 512000,
+      "backup_count": 2
     }
   },
   "browser_settings": {

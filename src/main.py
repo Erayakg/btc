@@ -3,6 +3,8 @@ import sys
 import os
 import time
 import random
+import signal
+import threading
 from datetime import datetime, timezone
 
 # Ensure src directory is in Python path for imports
@@ -13,6 +15,7 @@ from core.browser_manager import BrowserManager
 from core.llm_service import LLMService
 from utils.logger import setup_logger
 from utils.file_handler import FileHandler
+from utils.cleanup_manager import CleanupManager
 from data_models import AccountConfig, TweetContent, LLMSettings, ScrapedTweet, ActionConfig
 from features.scraper import TweetScraper
 from features.publisher import TweetPublisher
@@ -50,6 +53,13 @@ class TwitterOrchestrator:
         self.processed_action_keys = self.file_handler.load_processed_action_keys() # Load processed action keys
         self.global_tweets = []  # Global olarak üretilen tweetler
         self.global_repost_tweets = []  # Global olarak üretilen repost tweetler
+        
+        # Otomatik temizlik yöneticisi
+        self.cleanup_manager = CleanupManager()
+        
+        # Signal handling için
+        self.shutdown_event = threading.Event()
+        self.browser_managers = []  # Açık browser manager'ları takip et
 
     async def _generate_global_tweets(self, target_keywords: list, llm_settings: LLMSettings, tweet_count: int, user_handle: str = None) -> list:
         """Kullanıcıdan gelen sayı kadar tweet üretir. Anahtar kelimeler azsa döngüyle tekrar eder. Kullanıcı adı varsa tweetin sonuna ekler."""
@@ -184,6 +194,9 @@ class TwitterOrchestrator:
         browser_manager = None
         try:
             browser_manager = BrowserManager(account_config=account_dict) # Pass original dict for cookie path handling
+            
+            # Browser manager'ı listeye ekle (temizlik için)
+            self.browser_managers.append(browser_manager)
             
             # Login kontrolü yap
             logger.info(f"[{account.account_id}] Checking login status...")
@@ -383,7 +396,14 @@ class TwitterOrchestrator:
             logger.error(f"[{account.account_id or 'UnknownAccount'}] Unhandled error during account processing: {e}", exc_info=True)
         finally:
             if browser_manager:
-                browser_manager.close_driver()
+                try:
+                    browser_manager.close_driver()
+                    # Browser manager'ı listeden çıkar
+                    if browser_manager in self.browser_managers:
+                        self.browser_managers.remove(browser_manager)
+                except Exception as e:
+                    logger.warning(f"Browser kapatılırken hata: {e}")
+            
             # Safely log account ID
             account_id_for_log = account_dict.get('account_id', 'UnknownAccount')
             if 'account' in locals() and hasattr(account, 'account_id'):
@@ -396,6 +416,14 @@ class TwitterOrchestrator:
 
     async def run(self):
         logger.info("Twitter Orchestrator starting...")
+        
+        # Çalıştırma öncesi temizlik
+        try:
+            freed_space = self.cleanup_manager.cleanup_before_run()
+            logger.info(f"Çalıştırma öncesi temizlik tamamlandı. Kazanılan alan: {freed_space/1024/1024:.2f} MB")
+        except Exception as e:
+            logger.warning(f"Çalıştırma öncesi temizlik başarısız: {e}")
+        
         if not self.accounts_data:
             logger.warning("No accounts found in configuration. Orchestrator will exit.")
             return
@@ -528,10 +556,39 @@ class TwitterOrchestrator:
                 await asyncio.sleep(delay_between_batches)
         
         logger.info(f"Tüm gruplar tamamlandı! Toplam {total_processed}/{len(active_accounts)} aktif hesap başarıyla işlendi.")
+        
+        # Çalıştırma sonrası temizlik
+        try:
+            freed_space = self.cleanup_manager.cleanup_after_run()
+            logger.info(f"Çalıştırma sonrası temizlik tamamlandı. Kazanılan alan: {freed_space/1024/1024:.2f} MB")
+        except Exception as e:
+            logger.warning(f"Çalıştırma sonrası temizlik başarısız: {e}")
+    
+    def cleanup_all_browsers(self):
+        """Tüm açık browser'ları kapat"""
+        logger.info("Tüm browser'lar kapatılıyor...")
+        for browser_manager in self.browser_managers[:]:  # Copy list to avoid modification during iteration
+            try:
+                browser_manager.close_driver()
+                self.browser_managers.remove(browser_manager)
+            except Exception as e:
+                logger.warning(f"Browser kapatılırken hata: {e}")
+        logger.info("Tüm browser'lar kapatıldı.")
+    
+    def signal_handler(self, signum, frame):
+        """Signal handler for graceful shutdown"""
+        logger.info(f"Signal {signum} alındı. Güvenli kapatma başlatılıyor...")
+        self.shutdown_event.set()
+        self.cleanup_all_browsers()
 
 
 if __name__ == "__main__":
     orchestrator = TwitterOrchestrator()
+    
+    # Signal handler'ları ayarla
+    signal.signal(signal.SIGINT, orchestrator.signal_handler)
+    signal.signal(signal.SIGTERM, orchestrator.signal_handler)
+    
     try:
         asyncio.run(orchestrator.run())
     except KeyboardInterrupt:
@@ -539,4 +596,14 @@ if __name__ == "__main__":
     except Exception as e:
         logger.critical(f"Orchestrator failed with critical error: {e}", exc_info=True)
     finally:
+        # Tüm browser'ları kapat
+        orchestrator.cleanup_all_browsers()
+        
+        # Son temizlik
+        try:
+            freed_space = orchestrator.cleanup_manager.cleanup_after_run()
+            logger.info(f"Son temizlik tamamlandı. Kazanılan alan: {freed_space/1024/1024:.2f} MB")
+        except Exception as e:
+            logger.warning(f"Son temizlik başarısız: {e}")
+        
         logger.info("Orchestrator shutdown complete.")

@@ -159,6 +159,36 @@
             border: 1px solid #f5c6cb;
         }
         
+        .status-display {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+        }
+        
+        .status-indicator span:first-child {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .status-running {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-stopped {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
         .keyword-list {
             display: flex;
             flex-wrap: wrap;
@@ -548,6 +578,13 @@
                 </div>
             </div>
             
+            <div class="status-display">
+                <div class="status-indicator">
+                    <span>Durum:</span>
+                    <span id="status_indicator" class="status-stopped">🔴 Durdu</span>
+                </div>
+            </div>
+            
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="loadSettings()">📥 Ayarları Yükle</button>
                 <button class="btn" onclick="saveSettings()">💾 Ayarları Kaydet</button>
@@ -769,6 +806,8 @@
         }
         
         function stopAutomation() {
+            showStatus('Otomasyon durduruluyor ve Chrome sekmeleri kapatılıyor...', 'info');
+            
             fetch('/api/stop-automation', {
                 method: 'POST',
                 headers: {
@@ -778,13 +817,56 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showStatus('Otomasyon durduruldu!', 'success');
+                    showStatus(data.message || 'Otomasyon durduruldu!', 'success');
+                    // 2 saniye sonra durumu güncelle
+                    setTimeout(() => {
+                        updateStatus();
+                    }, 2000);
                 } else {
-                    showStatus('Otomasyon durdurulurken hata oluştu: ' + data.error, 'error');
+                    showStatus('Otomasyon durdurulurken hata oluştu: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 showStatus('Bağlantı hatası: ' + error.message, 'error');
+            });
+        }
+        
+        function updateStatus() {
+            fetch('/api/get-status')
+            .then(response => response.json())
+            .then(data => {
+                // Durum göstergesini güncelle
+                const statusIndicator = document.getElementById('status_indicator');
+                if (statusIndicator) {
+                    if (data.is_running) {
+                        statusIndicator.textContent = '🟢 Çalışıyor';
+                        statusIndicator.className = 'status-running';
+                    } else {
+                        statusIndicator.textContent = '🔴 Durdu';
+                        statusIndicator.className = 'status-stopped';
+                    }
+                }
+                
+                // Logları güncelle
+                const container = document.getElementById('log_container');
+                if (container && data.logs) {
+                    container.innerHTML = '';
+                    data.logs.forEach(log => {
+                        const entry = document.createElement('div');
+                        entry.className = 'log-entry';
+                        if (log.includes('ERROR') || log.includes('Hata')) {
+                            entry.classList.add('error');
+                        } else if (log.includes('SUCCESS') || log.includes('Başarı')) {
+                            entry.classList.add('success');
+                        }
+                        entry.textContent = log;
+                        container.appendChild(entry);
+                    });
+                    container.scrollTop = container.scrollHeight;
+                }
+            })
+            .catch(error => {
+                console.error('Durum güncellenirken hata:', error);
             });
         }
         
@@ -984,9 +1066,13 @@
         updateLikeKeywordList();
         initializeFileUpload();
         
-        // Auto refresh stats and logs every 30 seconds
+        // Sayfa yüklendiğinde durumu güncelle
+        updateStatus();
+        
+        // Auto refresh stats, logs and status every 30 seconds
         setInterval(refreshStats, 30000);
         setInterval(refreshLogs, 30000);
+        setInterval(updateStatus, 30000);
     </script>
 </body>
 </html> 
