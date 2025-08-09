@@ -150,17 +150,12 @@ class BrowserManager:
         # Unique user data directory for each browser instance to prevent conflicts
         import uuid
         import tempfile
-        import os
-        import threading
+        import time
         
-        # Daha güçlü benzersizlik için UUID'nin tamamını kullan + process ID + thread ID
-        unique_id = str(uuid.uuid4())
-        process_id = os.getpid()
-        thread_id = threading.get_ident()
-        unique_suffix = f"{unique_id}_{process_id}_{thread_id}"
-        
-        # Thread-safe directory oluşturma
-        user_data_dir = tempfile.mkdtemp(prefix=f"chrome_user_data_{unique_suffix}_")
+        # Basit ama etkili benzersizlik
+        unique_id = str(uuid.uuid4())[:12]
+        timestamp = int(time.time() * 1000) % 1000000  # Milisaniye cinsinden timestamp
+        user_data_dir = tempfile.mkdtemp(prefix=f"chrome_user_data_{unique_id}_{timestamp}_")
         options.add_argument(f"--user-data-dir={user_data_dir}")
         logger.info(f"Using unique user data directory: {user_data_dir}")
         
@@ -184,23 +179,37 @@ class BrowserManager:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
         
-        # Chrome stabilite ayarları - crash'leri önlemek için
-        options.add_argument("--disable-background-timer-throttling")
-        options.add_argument("--disable-backgrounding-occluded-windows")
-        options.add_argument("--disable-renderer-backgrounding")
-        options.add_argument("--disable-features=TranslateUI")
-        options.add_argument("--disable-ipc-flooding-protection")
-        options.add_argument("--disable-hang-monitor")
-        options.add_argument("--disable-prompt-on-repost")
-        options.add_argument("--disable-domain-reliability")
-        options.add_argument("--disable-component-extensions-with-background-pages")
+        # Çoklu instance çakışmalarını önlemek için ek ayarlar
+        options.add_argument("--no-first-run")
+        options.add_argument("--no-default-browser-check")
         options.add_argument("--disable-default-apps")
+        options.add_argument("--disable-popup-blocking")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--disable-background-networking")
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-client-side-phishing-detection")
+        options.add_argument("--disable-component-update")
         options.add_argument("--disable-sync")
         options.add_argument("--disable-translate")
         options.add_argument("--disable-web-security")
         options.add_argument("--allow-running-insecure-content")
         options.add_argument("--disable-features=VizDisplayCompositor")
         options.add_argument("--force-color-profile=srgb")
+        options.add_argument("--disable-backgrounding-occluded-windows")
+        options.add_argument("--disable-renderer-backgrounding")
+        options.add_argument("--disable-ipc-flooding-protection")
+        options.add_argument("--disable-hang-monitor")
+        options.add_argument("--disable-prompt-on-repost")
+        options.add_argument("--disable-domain-reliability")
+        options.add_argument("--disable-component-extensions-with-background-pages")
+        
+
+        
+
+        
+
+        
+
         
         # Türkçe karakter desteği için JavaScript'i açık tut
         # options.add_argument("--disable-javascript")  # Bu satırı kaldırdık
@@ -209,6 +218,10 @@ class BrowserManager:
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-plugins")
         options.add_argument("--disable-images")  # Hızlı yükleme için
+        
+
+        
+
         
         window_size = self.browser_settings.get('window_size', '1920,1080') # Default window size
         options.add_argument(f"--window-size={window_size}")
@@ -285,14 +298,14 @@ class BrowserManager:
                             logger.info("Local chromedriver not found, using WebDriver Manager")
                             service = ChromeService(ChromeDriverManager(path=driver_manager_install_path).install(), service_args=service_args if service_args else None)
                     
-                    # Chrome başlatmadan önce kısa bekleme
+                    # Chrome başlatmadan önce daha uzun bekleme
                     import time
-                    time.sleep(1)
+                    time.sleep(3)  # 3 saniye bekle
                     
                     self.driver = webdriver.Chrome(service=service, options=options)
                     
-                    # Chrome başlatıldıktan sonra kısa bekleme
-                    time.sleep(2)
+                    # Chrome başlatıldıktan sonra daha uzun bekleme
+                    time.sleep(5)  # 5 saniye bekle
                     
                     # JavaScript ile bot tespitini önle
                     self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -364,8 +377,8 @@ class BrowserManager:
                     logger.info(f"Cleaning up Chrome processes before retry {attempt + 2}...")
                     self._force_cleanup_chrome_processes()
                     import time
-                    # Daha uzun bekleme süresi - her retry'da artan süre
-                    wait_time = (attempt + 1) * 3  # 3, 6, 9 saniye
+                    # Daha uzun bekleme süresi
+                    wait_time = 10  # Sabit 10 saniye bekle
                     logger.info(f"Waiting {wait_time} seconds before retry...")
                     time.sleep(wait_time)
                 else:
@@ -383,36 +396,20 @@ class BrowserManager:
             import time
             
             if platform.system() == "Windows":
-                # Windows'ta daha agresif temizlik
+                # Windows'ta basit temizlik
                 subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
-                             capture_output=True, timeout=15)
-                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
-                             capture_output=True, timeout=15)
-                # Chrome'un tüm alt process'lerini de temizle
-                subprocess.run(["taskkill", "/f", "/im", "chrome.exe"], 
-                             capture_output=True, timeout=15)
-            else:
-                # Linux'ta daha kapsamlı temizlik
-                # Önce normal temizlik
-                subprocess.run(["pkill", "-f", "chrome"], 
-                             capture_output=True, timeout=15)
-                subprocess.run(["pkill", "-f", "chromedriver"], 
-                             capture_output=True, timeout=15)
-                
-                # Sonra daha agresif temizlik
-                subprocess.run(["pkill", "-9", "-f", "chrome"], 
-                             capture_output=True, timeout=15)
-                subprocess.run(["pkill", "-9", "-f", "chromedriver"], 
-                             capture_output=True, timeout=15)
-                
-                # Chrome'un tüm port'larını temizle
-                subprocess.run(["fuser", "-k", "9222/tcp"], 
                              capture_output=True, timeout=10)
-                subprocess.run(["fuser", "-k", "9223/tcp"], 
+                subprocess.run(["taskkill", "/f", "/im", "chromedriver.exe"], 
+                             capture_output=True, timeout=10)
+            else:
+                # Linux'ta basit temizlik
+                subprocess.run(["pkill", "-f", "chrome"], 
+                             capture_output=True, timeout=10)
+                subprocess.run(["pkill", "-f", "chromedriver"], 
                              capture_output=True, timeout=10)
             
-            # Temizlik sonrası kısa bekleme
-            time.sleep(2)
+            # Temizlik sonrası bekleme
+            time.sleep(3)
             logger.info("Chrome processes force cleaned")
         except Exception as e:
             logger.warning(f"Chrome process cleanup failed: {e}")
@@ -445,7 +442,6 @@ class BrowserManager:
             import tempfile
             import shutil
             import glob
-            import time
             
             # Find and remove temporary Chrome user data directories
             temp_dir = tempfile.gettempdir()
@@ -454,17 +450,6 @@ class BrowserManager:
             for chrome_dir in chrome_dirs:
                 try:
                     if os.path.exists(chrome_dir):
-                        # Önce dizinin kullanımda olup olmadığını kontrol et
-                        try:
-                            # Dizini yeniden adlandırmayı dene (kullanımda değilse başarılı olur)
-                            test_rename = chrome_dir + "_test"
-                            os.rename(chrome_dir, test_rename)
-                            os.rename(test_rename, chrome_dir)
-                        except OSError:
-                            # Dizin kullanımda, bekle ve tekrar dene
-                            time.sleep(1)
-                        
-                        # Şimdi silmeyi dene
                         shutil.rmtree(chrome_dir, ignore_errors=True)
                         logger.debug(f"Cleaned up temporary directory: {chrome_dir}")
                 except Exception as e:
