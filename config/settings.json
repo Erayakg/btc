@@ -4,7 +4,7 @@
   },
   "twitter_automation": {
     "response_interval_seconds": 300,
-    "tweets_per_account": 1,
+    "tweets_per_account": 3,
     "media_directory": "media_files",
     "processed_tweets_file": "processed_tweets_log.csv",
     "cookie_file_per_account_in_accounts_json": true,
@@ -54,7 +54,7 @@
   },
   "browser_settings": {
     "type": "chrome",
-    "headless": false,
+    "headless": true,
     "user_agent_generation": "random",
     "custom_user_agent": null,
     "proxy": null,
@@ -66,7 +66,13 @@
       "--disable-gpu",
       "--log-level=3",
       "--disable-notifications",
-      "--disable-popup-blocking"
+      "--disable-popup-blocking",
+      "--lang=tr-TR",
+      "--accept-lang=tr-TR,tr,en-US,en",
+      "--disable-features=TranslateUI",
+      "--disable-translate",
+      "--force-color-profile=srgb",
+      "--disable-features=VizDisplayCompositor"
     ],
     "page_load_timeout_seconds": 60,
     "script_timeout_seconds": 60

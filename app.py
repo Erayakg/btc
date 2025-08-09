@@ -65,9 +65,8 @@ def run_main_python():
     }
     
     try:
-        # main.py'yi çalıştır - headless mod için environment variable set et
+        # main.py'yi çalıştır - headless mod artık settings.json'dan kontrol ediliyor
         env = os.environ.copy()
-        env['BROWSER_HEADLESS'] = 'true'  # Chrome'un görünmemesi için
         
         # Settings dosyasının güncel olduğundan emin ol
         logger.info("Güncel settings.json dosyası kullanılıyor...")

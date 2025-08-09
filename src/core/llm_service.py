@@ -109,18 +109,38 @@ class LLMService:
             if self.gemini_client:
                 logger.info(f"Generating text with Gemini")
                 
-                # Add Turkish instruction to keep responses direct
-                turkish_prompt = f"{prompt}\n\nLütfen sadece tweet'i yaz, başka açıklama yapma. Direkt cevap ver."
+                # Add Turkish instruction to keep responses direct with UTF-8 support
+                turkish_prompt = f"{prompt}\n\nLütfen sadece tweet'i yaz, başka açıklama yapma. Direkt cevap ver. Türkçe karakterleri doğru kullan."
                 
                 # Limit tokens for Gemini to keep tweets short
                 max_tokens = call_params.get('max_tokens', 50)  # Default to 50 for Gemini
                 
-                # Convert async to sync for Gemini
+                # Convert async to sync for Gemini with UTF-8 encoding
                 loop = asyncio.get_event_loop()
                 response = await loop.run_in_executor(None, self.gemini_client.generate_content, turkish_prompt)
                 
                 if response and response.text:
+                    # UTF-8 encoding ile response'u işle
                     generated_text = response.text.strip()
+                    
+                    # Türkçe karakterleri kontrol et ve düzelt
+                    try:
+                        # UTF-8 encoding test
+                        generated_text.encode('utf-8')
+                        logger.info(f"Text encoding check passed: {generated_text[:50]}...")
+                        
+                        # Türkçe karakter kontrolü
+                        turkish_chars = ['ç', 'ğı', 'ö', 'ş', 'ü', 'Ç', 'Ğ', 'I', 'Ö', 'Ş', 'Ü']
+                        has_turkish = any(char in generated_text for char in turkish_chars)
+                        if has_turkish:
+                            logger.info("Text contains Turkish characters - UTF-8 encoding confirmed")
+                        
+                    except UnicodeEncodeError as e:
+                        logger.warning(f"Encoding issue detected: {e}")
+                        # Fallback: ASCII'ye çevir ama uyarı ver
+                        generated_text = generated_text.encode('ascii', 'replace').decode('ascii')
+                        logger.warning("Converted text to ASCII due to encoding issues")
+                        logger.warning("WARNING: Turkish characters may be lost!")
                     
                     # Limit tweet length to 280 characters (Twitter limit)
                     if len(generated_text) > 280:

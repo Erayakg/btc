@@ -263,27 +263,89 @@ class TweetPublisher:
                 # Method 1: Simulate human typing with random delays
                 logger.info("Simulating human typing with random delays...")
                 
-                # Türkçe karakterleri İngilizce karakterlere çevir
-                tweet_text_ascii = tweet_text.encode('ascii', 'ignore').decode('ascii')
+                # Türkçe karakter desteği için UTF-8 encoding kullan
                 logger.info(f"Original text: {tweet_text[:50]}...")
-                logger.info(f"ASCII text: {tweet_text_ascii[:50]}...")
                 
-                for char in tweet_text_ascii:
-                    text_area.send_keys(char)
-                    # Random delay between characters (0.05-0.15 seconds)
-                    time.sleep(random.uniform(0.05, 0.15))
-                    
-                    # Occasionally pause longer (like humans do when thinking)
-                    if random.random() < 0.1:  # 10% chance
-                        pause_duration = random.uniform(0.5, 2.0)
-                        logger.info(f"Pausing for {pause_duration:.1f} seconds (thinking pause)...")
-                        time.sleep(pause_duration)
+                # Method 1: Direct send_keys with UTF-8 support
+                logger.info("Starting UTF-8 character typing...")
+                for char in tweet_text:
+                    try:
+                        text_area.send_keys(char)
+                        # Random delay between characters (0.05-0.15 seconds)
+                        time.sleep(random.uniform(0.05, 0.15))
+                        
+                        # Occasionally pause longer (like humans do when thinking)
+                        if random.random() < 0.1:  # 10% chance
+                            pause_duration = random.uniform(0.5, 2.0)
+                            logger.info(f"Pausing for {pause_duration:.1f} seconds (thinking pause)...")
+                            time.sleep(pause_duration)
+                    except Exception as e:
+                        logger.warning(f"Failed to type character '{char}': {e}")
+                        # Try alternative method for this character
+                        try:
+                            self.driver.execute_script("""
+                                var textarea = arguments[0];
+                                var char = arguments[1];
+                                textarea.innerHTML += char;
+                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            """, text_area, char)
+                            logger.info(f"Successfully typed character '{char}' via JavaScript")
+                        except Exception as js_e:
+                            logger.error(f"Failed to type character '{char}' via JavaScript: {js_e}")
                 
                 logger.info("Finished human-like typing simulation.")
                 
-                # Method 2: Also set innerHTML as backup
-                self.driver.execute_script("arguments[0].innerHTML = arguments[1];", text_area, tweet_text_ascii)
-                logger.info("Set innerHTML as backup method.")
+                # Method 2: JavaScript ile UTF-8 desteği
+                try:
+                    self.driver.execute_script("""
+                        var textarea = arguments[0];
+                        var text = arguments[1];
+                        
+                        // Clear first
+                        textarea.textContent = '';
+                        textarea.innerHTML = '';
+                        
+                        // Set the text with proper encoding
+                        textarea.textContent = text;
+                        textarea.innerHTML = text;
+                        
+                        // Focus on textarea
+                        textarea.focus();
+                        
+                        // Trigger input events to activate the button
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                        textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                        textarea.dispatchEvent(new Event('keyup', { bubbles: true }));
+                        textarea.dispatchEvent(new Event('keydown', { bubbles: true }));
+                        
+                        // Simulate typing events for each character
+                        for (var i = 0; i < text.length; i++) {
+                            textarea.dispatchEvent(new KeyboardEvent('keydown', { 
+                                key: text[i], 
+                                code: 'Key' + text[i].toUpperCase(),
+                                bubbles: true 
+                            }));
+                            textarea.dispatchEvent(new KeyboardEvent('keyup', { 
+                                key: text[i], 
+                                code: 'Key' + text[i].toUpperCase(),
+                                bubbles: true 
+                            }));
+                        }
+                    """, text_area, tweet_text)
+                    logger.info("Set text via JavaScript with UTF-8 support.")
+                except Exception as e:
+                    logger.warning(f"JavaScript method failed: {e}")
+                    # Fallback: try simpler method
+                    try:
+                        self.driver.execute_script("""
+                            var textarea = arguments[0];
+                            var text = arguments[1];
+                            textarea.innerHTML = text;
+                            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                        """, text_area, tweet_text)
+                        logger.info("Set text via simple JavaScript fallback.")
+                    except Exception as fallback_e:
+                        logger.error(f"JavaScript fallback also failed: {fallback_e}")
                 
                 # Method 2: Trigger input events to activate button
                 self.driver.execute_script("""
@@ -307,7 +369,7 @@ class TweetPublisher:
                         textarea.dispatchEvent(new KeyboardEvent('keydown', { key: text[i] }));
                         textarea.dispatchEvent(new KeyboardEvent('keyup', { key: text[i] }));
                     }
-                """, text_area, tweet_text_ascii)
+                """, text_area, tweet_text)
                 logger.info("Triggered input events to activate button.")
                 
                 # Method 3: Add a character and then remove it to force button activation
@@ -349,7 +411,7 @@ class TweetPublisher:
                         time.sleep(0.5)
                         
                         # Type the text character by character
-                        for char in tweet_text_ascii:
+                        for char in tweet_text:
                             text_area.send_keys(char)
                             time.sleep(0.05)  # Small delay between characters
                         
@@ -734,8 +796,32 @@ class TweetPublisher:
             
             # reply_text_area.click() # Sometimes helpful
             reply_text_area.clear()
-            reply_text_area.send_keys(reply_text)
-            logger.info("Typed reply text into textarea.")
+            
+            # Türkçe karakter desteği için UTF-8 encoding kullan
+            logger.info(f"Reply text: {reply_text[:50]}...")
+            
+            # Method 1: Direct send_keys with UTF-8 support
+            for char in reply_text:
+                reply_text_area.send_keys(char)
+                time.sleep(random.uniform(0.05, 0.15))
+            
+            # Method 2: JavaScript ile UTF-8 desteği
+            self.driver.execute_script("""
+                var textarea = arguments[0];
+                var text = arguments[1];
+                
+                // Set the text with proper encoding
+                textarea.textContent = text;
+                textarea.innerHTML = text;
+                
+                // Trigger input events to activate the button
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                textarea.dispatchEvent(new Event('keyup', { bubbles: true }));
+                textarea.dispatchEvent(new Event('keydown', { bubbles: true }));
+            """, reply_text_area, reply_text)
+            
+            logger.info("Typed reply text into textarea with UTF-8 support.")
 
             # Click the "Reply" button in the composer
             # This is often also data-testid="tweetButton" but it's specific to the composer context
@@ -929,12 +1015,13 @@ class TweetPublisher:
                     EC.presence_of_element_located((By.XPATH, quote_text_area_xpath))
                 )
                 
-                # Human-like typing behavior for quote tweet
+                # Human-like typing behavior for quote tweet with UTF-8 support
                 logger.info("Starting human-like typing for quote tweet...")
+                logger.info(f"Quote text: {final_quote_text[:50]}...")
                 quote_text_area.clear()
                 time.sleep(random.uniform(0.5, 1.0))
                 
-                # Type character by character with random delays
+                # Method 1: Direct send_keys with UTF-8 support
                 for char in final_quote_text:
                     quote_text_area.send_keys(char)
                     time.sleep(random.uniform(0.05, 0.15))
@@ -945,7 +1032,23 @@ class TweetPublisher:
                         logger.info(f"Pausing for {pause_duration:.1f} seconds during quote typing...")
                         time.sleep(pause_duration)
                 
-                logger.info("Finished human-like typing for quote tweet.")
+                # Method 2: JavaScript ile UTF-8 desteği
+                self.driver.execute_script("""
+                    var textarea = arguments[0];
+                    var text = arguments[1];
+                    
+                    // Set the text with proper encoding
+                    textarea.textContent = text;
+                    textarea.innerHTML = text;
+                    
+                    // Trigger input events to activate the button
+                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                    textarea.dispatchEvent(new Event('keyup', { bubbles: true }));
+                    textarea.dispatchEvent(new Event('keydown', { bubbles: true }));
+                """, quote_text_area, final_quote_text)
+                
+                logger.info("Finished human-like typing for quote tweet with UTF-8 support.")
                 logger.info("Typed quote text.")
 
                 # Click "Post" button for the quote tweet

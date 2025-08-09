@@ -139,22 +139,47 @@ class BrowserManager:
         user_agent = self._get_user_agent()
         options.add_argument(f"user-agent={user_agent}")
 
-        # Browser gizli olsun - headless modu aç
-        options.add_argument("--headless")  # ENABLED FOR HIDDEN BROWSER
+        # Headless modu ayarlardan al - varsayılan olarak kapalı
+        headless_mode = self.browser_settings.get('headless', False)
+        if headless_mode:
+            options.add_argument("--headless")
+            logger.info("Headless mode enabled")
+        else:
+            logger.info("Headless mode disabled - browser will be visible")
+        
+        # Türkçe karakter desteği için encoding ayarları
+        options.add_argument("--lang=tr-TR")
+        options.add_argument("--accept-lang=tr-TR,tr,en-US,en")
+        options.add_argument("--force-device-scale-factor=1")
+        options.add_argument("--disable-features=TranslateUI")
+        options.add_argument("--disable-translate")
+        options.add_argument("--force-color-profile=srgb")
+        
+        # UTF-8 encoding desteği
+        options.add_argument("--force-device-scale-factor=1")
+        options.add_argument("--disable-features=VizDisplayCompositor")
+        
+        # Temel Chrome ayarları
         options.add_argument("--disable-gpu") # Often needed for headless
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        
-        # Bot tespitini önlemek için ek ayarlar
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
+        
+        # Türkçe karakter desteği için JavaScript'i açık tut
+        # options.add_argument("--disable-javascript")  # Bu satırı kaldırdık
+        
+        # Diğer ayarlar
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-plugins")
         options.add_argument("--disable-images")  # Hızlı yükleme için
-        options.add_argument("--disable-javascript")  # Güvenlik için
         options.add_argument("--disable-web-security")
         options.add_argument("--allow-running-insecure-content")
+        
+        # Encoding ayarları
+        options.add_argument("--force-color-profile=srgb")
+        options.add_argument("--disable-features=VizDisplayCompositor")
         
         window_size = self.browser_settings.get('window_size', '1920,1080') # Default window size
         options.add_argument(f"--window-size={window_size}")
