@@ -1,0 +1,1586 @@
+[
+  {
+    "account_id": "adelle_burton",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/adelle_burton_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "dayatarbie21",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/dayatarbie21_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "amajhrycraig",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/amajhrycraig_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "kamalaboelkamal",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/kamalaboelkamal_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "Unknown82497814",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/Unknown82497814_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "dupreezp",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/dupreezp_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "tobisaputra",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/tobisaputra_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "cedricarmel78",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/cedricarmel78_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "uristapopo",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/uristapopo_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "jennzie1234",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/jennzie1234_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "teiupescmult",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/teiupescmult_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "taichinhhai",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/taichinhhai_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "oshelmadine",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/oshelmadine_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "xtrakewlzay11",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/xtrakewlzay11_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "serubay",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/serubay_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "gracie_jano",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/gracie_jano_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "ivanaolivas",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/ivanaolivas_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "glazynchik",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/glazynchik_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "IrinaMalyutina1",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/IrinaMalyutina1_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "crstncaba",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/crstncaba_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "asghar_204u",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/asghar_204u_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "malsmyles",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/malsmyles_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "maloucorsino",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/maloucorsino_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "rosemartin9898",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/rosemartin9898_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "munawarleo1",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/munawarleo1_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "laylaylijha",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/laylaylijha_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "coreyldavid87",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/coreyldavid87_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "netasayhi",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/netasayhi_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "oxnap1",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/oxnap1_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "mutthukkumaar",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/mutthukkumaar_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "aronoff2",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/aronoff2_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "rixxsmbrn",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/rixxsmbrn_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "rachelw5678",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/rachelw5678_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "max258065",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/max258065_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "csantillan8976",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/csantillan8976_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  },
+  {
+    "account_id": "jcrgap",
+    "is_active": true,
+    "cookie_file_path": "confighamit/configsub/jcrgap_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
+  }
+]

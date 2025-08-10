@@ -9409,5 +9409,49 @@
     "is_active": false,
     "cookie_file_path": "",
     "skipped": false
+  },
+  {
+    "account_id": "adelle_burton",
+    "is_active": true,
+    "cookie_file_path": "config/configsub/adelle_burton_cookies.json",
+    "target_keywords_override": [
+      "Artificial General Intelligence",
+      "Large Language Models applications",
+      "AI Ethics in practice",
+      "Future of AI"
+    ],
+    "competitor_profiles_override": [
+      "https://x.com/OpenAI",
+      "https://x.com/DeepMind",
+      "https://x.com/MetaAI"
+    ],
+    "news_sites_override": [
+      "https://techcrunch.com/category/artificial-intelligence/",
+      "https://www.technologyreview.com/artificial-intelligence/"
+    ],
+    "research_paper_sites_override": [
+      "https://arxiv.org/list/cs.AI/pastweek?show=10"
+    ],
+    "llm_settings_override": {
+      "service_preference": "openai",
+      "model_name_override": "gpt-4o",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "action_config_override": {
+      "min_delay_between_actions_seconds": 90,
+      "max_delay_between_actions_seconds": 240,
+      "enable_competitor_reposts": true,
+      "max_posts_per_competitor_run": 2,
+      "min_likes_for_repost_candidate": 20,
+      "min_retweets_for_repost_candidate": 5,
+      "enable_thread_analysis": true,
+      "llm_settings_for_post": {
+        "service_preference": "openai",
+        "model_name_override": "gpt-4o",
+        "max_tokens": 250,
+        "temperature": 0.72
+      }
+    }
   }
 ]

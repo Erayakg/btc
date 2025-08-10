@@ -1,0 +1,121 @@
+[
+  {
+    "domain": ".x.com",
+    "expiry": 1786305667,
+    "httpOnly": false,
+    "name": "twid",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "u%3D2755357676"
+  },
+  {
+    "domain": "x.com",
+    "httpOnly": false,
+    "name": "lang",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "en"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1754778627,
+    "httpOnly": false,
+    "name": "gt",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "1954271579497463934"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329662,
+    "httpOnly": false,
+    "name": "ct0",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "264fb31ea0120467dae02c460ec42e73bfc7661aa9919afcfc93fc50ef86e7fd980502f98f791029594d6bfca0343f467ceb40640bcfd9f1f926acf1a88943b2bc9432a92bf0875b70dfe4411c4fd6d5"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329665,
+    "httpOnly": false,
+    "name": "__cuid",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "6ab4a4b90adc4816b96b375030f2f79f"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329662,
+    "httpOnly": true,
+    "name": "auth_token",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "54cb7f87373bed3b9fc4a049499f6bd0e849d618"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329662,
+    "httpOnly": true,
+    "name": "kdt",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "4qnGhW5BlydDp7Vr2QD5rUfd2Riui8ikBBwYOvHz"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329667,
+    "httpOnly": false,
+    "name": "guest_id_ads",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "v1%3A175476962779364710"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329667,
+    "httpOnly": false,
+    "name": "guest_id_marketing",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "v1%3A175476962779364710"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1754771427,
+    "httpOnly": true,
+    "name": "__cf_bm",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "MveypAt3CutgNGq5QsAG5YGc1xUrqFOeafQx87p93yo-1754769627-1.0.1.1-2aHX2Vq4UKuaLbfZNX5TdYMJG7GlU.sFe93eCsA4kayBFqOuH3y.KWvBWiU6.BUG9IkndkEmvPLAy77YS8ISP296fUmqpPPIy4nOaOhyicQ"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329627,
+    "httpOnly": false,
+    "name": "guest_id",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "v1%3A175476962779364710"
+  },
+  {
+    "domain": ".x.com",
+    "expiry": 1789329627,
+    "httpOnly": false,
+    "name": "personalization_id",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "\"v1_GRpQWcN1sTtQZQZr4Yohdg==\""
+  }
+]
