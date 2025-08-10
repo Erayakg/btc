@@ -75,6 +75,11 @@ def setup_chrome_driver():
 
         options = ChromeOptions()
         
+        # Headless mod - Görünmez çalışma
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-first-run")
+        
         # Yeni profil kullan - Takılma sorununu önlemek için
         import tempfile
         import platform
@@ -150,7 +155,7 @@ def setup_chrome_driver():
             });
         """)
         
-        print("[SUCCESS] Chrome basariyla baslatildi (gelişmiş anti-detection ile)")
+        print("[SUCCESS] Chrome basariyla baslatildi (headless mod - görünmez)")
         return driver
     except Exception as e:
         print(f"[ERROR] Chrome baslatilamadi: {e}")
@@ -250,25 +255,23 @@ def check_login_status(driver):
         return False
 
 def simulate_human_behavior(driver):
-    """İnsan benzeri davranış simule et"""
+    """İnsan benzeri davranış simule et (headless mod için uyarlandı)"""
     try:
-        # Mouse hareketlerini simule et
-        actions = ActionChains(driver)
+        # Headless modda mouse hareketleri çalışmaz, sadece scrolling yapıyoruz
+        print("[INFO] Insan benzeri davranış simule ediliyor (headless mod)...")
         
-        # Rastgele koordinatlarda mouse hareketi
-        for _ in range(random.randint(2, 4)):
-            x = random.randint(100, 800)
-            y = random.randint(100, 600)
-            actions.move_by_offset(x, y)
-            time.sleep(random.uniform(0.1, 0.3))
-        
-        actions.perform()
-        
-        # Sayfa scrolling
+        # Sayfa scrolling - headless modda çalışır
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight/4);")
         time.sleep(random.uniform(0.5, 1.0))
         driver.execute_script("window.scrollTo(0, 0);")
         time.sleep(random.uniform(0.3, 0.7))
+        
+        # Sayfada rastgele noktalara focus et
+        try:
+            driver.execute_script("document.body.focus();")
+            time.sleep(random.uniform(0.1, 0.3))
+        except:
+            pass
         
     except Exception as e:
         print(f"[INFO] İnsan benzeri davranış simule edilemedi: {e}")
@@ -410,8 +413,8 @@ def automatic_login(driver, account):
         
         # Bot doğrulaması için uzun bekleme
         print(f"[INFO] {username} icin login durumu kontrol ediliyor...")
-        print("[INFO] Eğer bot doğrulaması gelirse manuel olarak geçirin!")
-        print("[INFO] Login tamamlandıktan sonra bu pencereyi kapatmayın!")
+        print("[INFO] Headless modda çalışıyoruz - otomatik bot doğrulama bypass denenecek")
+        print("[INFO] Eğer bot doğrulaması gelirse script otomatik olarak deneyecek")
         
         # Sürekli login durumunu kontrol et
         max_wait_time = 120  # 2 dakika maksimum bekleme
@@ -586,12 +589,12 @@ def process_single_account(account):
                 update_accounts_json(account['username'])
                 
                 print(f"[INFO] {account['username']} icin islem tamamlandi!")
-                print("[INFO] Chrome penceresi manuel olarak kapatilabilir")
+                print("[INFO] Chrome headless modda çalıştığı için pencere görünmez")
                 
                 # Başarılı hesap için driver'ı kapat
                 try:
                     driver.quit()
-                    print(f"[INFO] {account['username']} icin Chrome penceresi kapatildi")
+                    print(f"[INFO] {account['username']} icin Chrome session kapatildi")
                 except:
                     pass
                 
@@ -601,7 +604,11 @@ def process_single_account(account):
                 return False
         else:
             print(f"[ERROR] {account['username']} icin login basarisiz")
-            print("[INFO] Chrome penceresi açık bırakıldı - Manuel kontrol için")
+            print("[INFO] Chrome session kapatılacak - headless modda çalışıyor")
+            try:
+                driver.quit()
+            except:
+                pass
             return False
             
     except Exception as e:
@@ -618,11 +625,11 @@ def process_single_account(account):
 def main():
     """Ana fonksiyon - Hesapları işle"""
     print("=" * 80)
-    print("[INFO] CHROME ILE OTOMATIK TWITTER LOGIN ARACI")
+    print("[INFO] CHROME ILE OTOMATIK TWITTER LOGIN ARACI (HEADLESS MOD)")
     print("=" * 80)
     print(f"[INFO] Bu araç {ACCOUNTS_FILE} dosyasından hesapları okur")
     print("[INFO] Her hesap için otomatik Twitter login yapar")
-    print("[INFO] Chrome penceresi görünür modda açılır")
+    print("[INFO] Chrome penceresi GÖRÜNMEZ modda açılır (headless)")
     print("[INFO] Yeni Chrome profili kullanılır - Takılma sorunu önlenir")
     print("[INFO] Başarılı loginler için çerezler kaydedilir")
     print("=" * 80)
