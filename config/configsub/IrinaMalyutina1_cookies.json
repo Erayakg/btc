@@ -1,13 +1,13 @@
 [
   {
     "domain": ".x.com",
-    "expiry": 1786303740,
+    "expiry": 1786306952,
     "httpOnly": false,
     "name": "twid",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "u%3D81775289"
+    "value": "u%3D738121717"
   },
   {
     "domain": "x.com",
@@ -16,116 +16,116 @@
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "en"
+    "value": "ru"
   },
   {
     "domain": ".x.com",
-    "expiry": 1754776712,
+    "expiry": 1754779898,
     "httpOnly": false,
     "name": "gt",
     "path": "/",
     "sameSite": "Lax",
     "secure": true,
-    "value": "1954263548458045808"
+    "value": "1954276912894779862"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327735,
+    "expiry": 1789330947,
     "httpOnly": false,
     "name": "ct0",
     "path": "/",
     "sameSite": "Lax",
     "secure": true,
-    "value": "e953904f22b2c65ff932fe0c3be3683e856c1feec34b871dfe421d35812fc09afe79642fd3466d6c1f308a0212ac97bdd4d5ef9994afd8a3d9e71e25847eac7a11ded48a92ac0d51bc9192c06d67c5d6"
+    "value": "9fd5cc14d1712d0735bac001adec80b8b97a8504c0dbaaa9916e36dff9f4b11115f158fb0a42b78dc741cc32c0909076a0f9771c6f86f50cbac42b06bcac896967e2eb2b40c90fdfbaea3168e7c0830c"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327737,
+    "expiry": 1789330950,
     "httpOnly": false,
     "name": "__cuid",
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "bcf25d2e5fcf44199979468055fb69df"
+    "value": "90f4dc9c5e684568baa2fe4d135ae115"
   },
   {
     "domain": ".x.com",
-    "expiry": 1754854135,
+    "expiry": 1754857348,
     "httpOnly": true,
     "name": "att",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "1-lEHCqFnbCH2g5DdqIHHIqDh9IR72R2czzUtH1VOq"
+    "value": "1-7o2nFXNoS91RTU3tR2VW1GJmdkU4UazT6yBLabht"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327734,
+    "expiry": 1789330947,
     "httpOnly": true,
     "name": "auth_token",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "6c8900c234eed9e78e3a08e8a1c79e9a4138a048"
+    "value": "bd994aa09a9d33a2153a9c7f992941a1c83171df"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327734,
+    "expiry": 1789330947,
     "httpOnly": true,
     "name": "kdt",
     "path": "/",
     "sameSite": "Lax",
     "secure": true,
-    "value": "MhXvYjHJkLcNRLkSHIlvs54rlLeefl2whfbnFDWS"
+    "value": "ESDRk9uxdOit3IDjLvGv9L0PrTZTfdQAOkThqaVW"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327740,
+    "expiry": 1789330952,
     "httpOnly": false,
     "name": "guest_id_ads",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "v1%3A175476771304148093"
+    "value": "v1%3A175477089938212634"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327740,
+    "expiry": 1789330952,
     "httpOnly": false,
     "name": "guest_id_marketing",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "v1%3A175476771304148093"
+    "value": "v1%3A175477089938212634"
   },
   {
     "domain": ".x.com",
-    "expiry": 1754769512,
+    "expiry": 1754772698,
     "httpOnly": true,
     "name": "__cf_bm",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "c5Xduif1fOs79UvOpZQkBBZSVy6Da7Mo31q7VqLd9ac-1754767713-1.0.1.1-OhVW7Z2_RY_S_4sbfIIJHDY4LcDUfyFzP8Oo1ikf0Q45mb2Peszx39aq38twSO1E6Rc_u7Meav4hD3cjnd7H2SNFEfb5G6ZeHz47x4Kj0Lo"
+    "value": "bjcysGSo5Ii73oYlno.2pdDtcglCqStlunZfrplpIf4-1754770899-1.0.1.1-v9W_Rl39auc4dkKuBoESVDyYxXugRwBlQz3iX4jiJJMsw6x6dVNxYh9GfkgbT9exTH.iWYjSjBjVWnkJhMkaau6U3UzWd4jnoRn7vty8JcU"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327712,
+    "expiry": 1789330898,
     "httpOnly": false,
     "name": "guest_id",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "v1%3A175476771304148093"
+    "value": "v1%3A175477089938212634"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327712,
+    "expiry": 1789330898,
     "httpOnly": false,
     "name": "personalization_id",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "\"v1_mkpztx+Xl3yGKJH0gN6/Zw==\""
+    "value": "\"v1_jIooqHNCAQux2fAmj0llRQ==\""
   }
 ]

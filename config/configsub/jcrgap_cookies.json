@@ -1,13 +1,13 @@
 [
   {
     "domain": ".x.com",
-    "expiry": 1786303740,
+    "expiry": 1786360481,
     "httpOnly": false,
     "name": "twid",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "u%3D81775289"
+    "value": "u%3D3133358085"
   },
   {
     "domain": "x.com",
@@ -16,116 +16,106 @@
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "en"
+    "value": "es"
   },
   {
     "domain": ".x.com",
-    "expiry": 1754776712,
+    "expiry": 1754833434,
     "httpOnly": false,
     "name": "gt",
     "path": "/",
     "sameSite": "Lax",
     "secure": true,
-    "value": "1954263548458045808"
+    "value": "1954501460055486781"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327735,
+    "expiry": 1789384478,
     "httpOnly": false,
     "name": "ct0",
     "path": "/",
     "sameSite": "Lax",
     "secure": true,
-    "value": "e953904f22b2c65ff932fe0c3be3683e856c1feec34b871dfe421d35812fc09afe79642fd3466d6c1f308a0212ac97bdd4d5ef9994afd8a3d9e71e25847eac7a11ded48a92ac0d51bc9192c06d67c5d6"
+    "value": "d928c11c319780e4bf2c0f6a4f83f5738aa4c9a15663babe596a3303d4b498ac0fb7a6bf843a024239a6e0fe2b122d946ba53c86dbaae1747eda8a1861de1e91047777a776dcbcd75c69b9d899aae6fa"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327737,
+    "expiry": 1789384480,
     "httpOnly": false,
     "name": "__cuid",
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "bcf25d2e5fcf44199979468055fb69df"
+    "value": "ad25fcc7e4454148b28d1e4d4baccf6e"
   },
   {
     "domain": ".x.com",
-    "expiry": 1754854135,
-    "httpOnly": true,
-    "name": "att",
-    "path": "/",
-    "sameSite": "None",
-    "secure": true,
-    "value": "1-lEHCqFnbCH2g5DdqIHHIqDh9IR72R2czzUtH1VOq"
-  },
-  {
-    "domain": ".x.com",
-    "expiry": 1789327734,
+    "expiry": 1789384478,
     "httpOnly": true,
     "name": "auth_token",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "6c8900c234eed9e78e3a08e8a1c79e9a4138a048"
+    "value": "a904d343474e1c88da5db0afc7baaf7cd66d26bf"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327734,
+    "expiry": 1789384478,
     "httpOnly": true,
     "name": "kdt",
     "path": "/",
     "sameSite": "Lax",
     "secure": true,
-    "value": "MhXvYjHJkLcNRLkSHIlvs54rlLeefl2whfbnFDWS"
+    "value": "lB2KIIKwPMlzj76soD3vj61Q0mCzTCPQw87YNRJy"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327740,
+    "expiry": 1789384481,
     "httpOnly": false,
     "name": "guest_id_ads",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "v1%3A175476771304148093"
+    "value": "v1%3A175482443558987407"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327740,
+    "expiry": 1789384481,
     "httpOnly": false,
     "name": "guest_id_marketing",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "v1%3A175476771304148093"
+    "value": "v1%3A175482443558987407"
   },
   {
     "domain": ".x.com",
-    "expiry": 1754769512,
+    "expiry": 1754826234,
     "httpOnly": true,
     "name": "__cf_bm",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "c5Xduif1fOs79UvOpZQkBBZSVy6Da7Mo31q7VqLd9ac-1754767713-1.0.1.1-OhVW7Z2_RY_S_4sbfIIJHDY4LcDUfyFzP8Oo1ikf0Q45mb2Peszx39aq38twSO1E6Rc_u7Meav4hD3cjnd7H2SNFEfb5G6ZeHz47x4Kj0Lo"
+    "value": "r9m0yCjmh1n._g2Xk5zGBav.u87WfyYBk_tcqZMjRJ8-1754824435-1.0.1.1-qR8LomxPDV665wmR5o3ud062mjJHxdLKVGfWYyWtpqnlTMpUPEtO_W9j40ARiD8fzpqIoxOm3GJzkzPkyC5dW9m.bJh6WN1OAlRq8meVWsM"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327712,
+    "expiry": 1789384434,
     "httpOnly": false,
     "name": "guest_id",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "v1%3A175476771304148093"
+    "value": "v1%3A175482443558987407"
   },
   {
     "domain": ".x.com",
-    "expiry": 1789327712,
+    "expiry": 1789384434,
     "httpOnly": false,
     "name": "personalization_id",
     "path": "/",
     "sameSite": "None",
     "secure": true,
-    "value": "\"v1_mkpztx+Xl3yGKJH0gN6/Zw==\""
+    "value": "\"v1_1laKJOgUDkm59dBtiaATPQ==\""
   }
 ]
